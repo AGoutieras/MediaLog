@@ -11,7 +11,7 @@ CREATE TABLE MEDIA_ENTRIES (
     user_id uuid NOT NULL,
     FOREIGN KEY (user_id)
     REFERENCES Users(id),
-    external_id VARCHAR NOT NULL UNIQUE,
+    external_id VARCHAR NOT NULL,
     media_type VARCHAR NOT NULL,
     title VARCHAR NOT NULL,
     cover_url VARCHAR UNIQUE,
