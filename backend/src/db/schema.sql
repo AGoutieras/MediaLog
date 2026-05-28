@@ -1,0 +1,23 @@
+CREATE TABLE USERS (
+    id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
+    username VARCHAR NOT NULL UNIQUE,
+    email VARCHAR NOT NULL UNIQUE,
+    hashed_password VARCHAR NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE MEDIA_ENTRIES (
+    id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL,
+    FOREIGN KEY (user_id)
+    REFERENCES Users(id),
+    external_id VARCHAR NOT NULL,
+    media_type VARCHAR NOT NULL,
+    title VARCHAR NOT NULL,
+    cover_url VARCHAR UNIQUE,
+    status VARCHAR NOT NULL,
+    rating SMALLINT,
+    note TEXT,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
