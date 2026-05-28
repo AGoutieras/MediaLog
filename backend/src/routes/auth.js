@@ -32,7 +32,7 @@ router.post('/register', async (req, res) =>
 
     const token = jwt.sign(newUser.rows[0], process.env.JWT_SECRET,
     {
-      expiresIn: '1h'
+      expiresIn: '24h'
     })
 
     return res.status(201).json(
@@ -79,7 +79,7 @@ router.post('/login', async (req, res) =>
 
     const token = jwt.sign({id: result.rows[0].id, email: result.rows[0].email, username: result.rows[0].username}, process.env.JWT_SECRET,
     {
-      expiresIn: '1h'
+      expiresIn: '24h'
     })
 
     return res.status(200).json(
