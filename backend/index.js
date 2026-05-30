@@ -24,7 +24,6 @@ app.use('/entries', entriesRouter)
 
 app.use('/search', searchRouter)
 
-app.listen(PORT, () =>
-{
+app.listen(PORT, () => {
   console.log("Server listening on PORT", PORT)
 })
