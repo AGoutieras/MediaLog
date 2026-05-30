@@ -5,6 +5,7 @@ import './src/db/index.js'
 import authRouter from './src/routes/auth.js'
 import entriesRouter from './src/routes/entries.js'
 import authMiddleware from './src/middleware/auth.js'
+import searchRouter from './src/routes/search.js'
 
 dotenv.config()
 
@@ -20,6 +21,8 @@ app.use('/auth', authRouter)
 app.use(authMiddleware)
 
 app.use('/entries', entriesRouter)
+
+app.use('/search', searchRouter)
 
 app.listen(PORT, () =>
 {
