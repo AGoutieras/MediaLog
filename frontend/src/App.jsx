@@ -1,8 +1,11 @@
-function App() {
+import SearchPage from "./pages/SearchPage";
 
-  return (
-    <h1 className="text-red-500">MediaLog</h1>
-  )
+function App() {
+	return (
+		<>
+			<SearchPage />
+		</>
+	);
 }
 
-export default App
+export default App;
