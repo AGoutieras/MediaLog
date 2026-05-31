@@ -1,11 +1,11 @@
-import { useState } from "react";
-import SearchBar from "../components/SearchBar";
-import ResultList from "../components/ResultList";
+import { useState } from 'react';
+import SearchBar from '../components/SearchBar';
+import ResultList from '../components/ResultList';
 
 export default function SearchPage() {
 	const [results, setResults] = useState([]);
-	const [query, setQuery] = useState("");
-	const [type, setType] = useState("all");
+	const [query, setQuery] = useState('');
+	const [type, setType] = useState('all');
 
 	async function handleSearch() {
 		try {
@@ -14,7 +14,7 @@ export default function SearchPage() {
 				{
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem(
-							"token"
+							'token'
 						)}`,
 					},
 				}
@@ -28,14 +28,16 @@ export default function SearchPage() {
 
 	return (
 		<>
-			<SearchBar
-				query={query}
-				setQuery={setQuery}
-				type={type}
-				setType={setType}
-				onSearch={handleSearch}
-			/>
-			<ResultList results={results} />
+			<div className='p-8 pt-12'>
+				<SearchBar
+					query={query}
+					setQuery={setQuery}
+					type={type}
+					setType={setType}
+					onSearch={handleSearch}
+				/>
+				<ResultList results={results} />
+			</div>
 		</>
 	);
 }
