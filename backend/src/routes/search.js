@@ -29,6 +29,14 @@ router.get('/', async (req, res) => {
       const results = await searchSeries(q)
 
       return res.status(200).json(results)
+    } else if (type === 'all') {
+      const [games, movies, series] = await Promise.all([
+        searchGames(q),
+        searchMovies(q),
+        searchSeries(q)
+      ])
+
+      return res.status(200).json([...games, ...movies, ...series])
     } else {
       return res.status(400).json({
         message: 'invalid media type'
