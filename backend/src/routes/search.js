@@ -1,5 +1,5 @@
 import express from 'express'
-import searchGames from '../services/rawg.js'
+import searchGames from '../services/igdb.js'
 import { searchMovies, searchSeries } from '../services/tmdb.js'
 
 const router = express.Router()
