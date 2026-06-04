@@ -64,7 +64,49 @@ router.post("/", async (req, res) => {
 
     return res.status(201).json({ entry: insertMedia.rows[0] });
   } catch (err) {
-    console.error(err);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const { status, rating, note } = req.body;
+    const id = req.params.id;
+
+    const updatedEntry = await pool.query(
+      "UPDATE user_media SET status = $1, rating = $2, note = $3 WHERE user_id = $4 AND id = $5 RETURNING *",
+      [status, rating, note, req.user.id, id],
+    );
+
+    if (updatedEntry.rows.length === 0) {
+      return res.status(404).json({ message: "entry not found" });
+    }
+
+    return res.status(200).json({ entry: updatedEntry.rows[0] });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const deleteEntry = await pool.query(
+      "DELETE FROM user_media WHERE id = $1 AND user_id = $2 RETURNING *",
+      [id, req.user.id],
+    );
+
+    if (deleteEntry.rows.length === 0) {
+      return res.status(404).json({ message: "entry not found" });
+    }
+
+    return res.status(204).json({});
+  } catch (err) {
     return res.status(500).json({
       message: "Internal server error",
     });
