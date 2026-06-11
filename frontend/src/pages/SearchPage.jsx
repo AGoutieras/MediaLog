@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import SearchBar from '../components/SearchBar';
-import ResultList from '../components/ResultList';
-import EntryModal from '../components/EntryModal';
+import { useState } from "react";
+import SearchBar from "../components/SearchBar";
+import ResultList from "../components/ResultList";
+import EntryModal from "../components/EntryModal";
 
 export default function SearchPage() {
   const [results, setResults] = useState([]);
-  const [query, setQuery] = useState('');
-  const [type, setType] = useState('all');
+  const [query, setQuery] = useState("");
+  const [type, setType] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
@@ -17,7 +17,7 @@ export default function SearchPage() {
         `http://localhost:3000/search?q=${query}&type=${type}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
@@ -38,13 +38,13 @@ export default function SearchPage() {
     setIsModalOpen(false);
   }
 
-  async function handleConfirm(note) {
+  async function handleConfirm(note, rating) {
     try {
-      const response = await fetch('http://localhost:3000/entries', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/entries", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
           external_id: selectedMedia.external_id,
@@ -53,7 +53,8 @@ export default function SearchPage() {
           year: selectedMedia.year,
           cover_url: selectedMedia.cover_url,
           status: selectedStatus,
-          note: note
+          note: note,
+          rating: rating,
         }),
       });
       const data = await response.json();
@@ -65,7 +66,7 @@ export default function SearchPage() {
 
   return (
     <>
-      <div className='p-8 pt-12'>
+      <div className="p-8 pt-12">
         <SearchBar
           query={query}
           setQuery={setQuery}
