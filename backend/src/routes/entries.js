@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { external_id, media_type, title, year, cover_url, status } =
+    const { external_id, media_type, title, year, cover_url, status, note } =
       req.body;
 
     const result = await pool.query(
@@ -54,8 +54,8 @@ router.post("/", async (req, res) => {
     }
 
     const insertMedia = await pool.query(
-      "INSERT INTO user_media (user_id, media_id, status) VALUES ($1, $2, $3) ON CONFLICT (user_id, media_id) DO NOTHING RETURNING *",
-      [req.user.id, mediaId, status],
+      "INSERT INTO user_media (user_id, media_id, status, note) VALUES ($1, $2, $3, $4) ON CONFLICT (user_id, media_id) DO NOTHING RETURNING *",
+      [req.user.id, mediaId, status, note],
     );
 
     if (insertMedia.rows.length === 0) {
