@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { House, Search, LogOut } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const colors = [
@@ -28,6 +28,21 @@ export default function Navbar() {
 
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    if (isDropdownOpen) {
+      function handleClickOutside() {
+        setIsDropdownOpen(false);
+      }
+
+      document.addEventListener("click", handleClickOutside);
+
+      return () => {
+        document.removeEventListener("click", handleClickOutside);
+      };
+    }
+  }, [isDropdownOpen]);
 
   if (!user) return null;
 
@@ -41,8 +56,6 @@ export default function Navbar() {
         .toUpperCase()
         .slice(0, 2)
     : user.username[0].toUpperCase();
-
-  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
   return (
     <nav className="relative flex items-center justify-between px-8 py-4 border-b border-zinc-800">
@@ -80,7 +93,10 @@ export default function Navbar() {
       {/* Avatar */}
       <div
         className="relative cursor-pointer select-none"
-        onClick={() => setIsDropDownOpen(!isDropDownOpen)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsDropdownOpen(!isDropdownOpen);
+        }}
       >
         <div
           className={`w-9 h-9 rounded-full ${avatarColor} flex items-center justify-center text-white text-sm font-bold`}
@@ -92,7 +108,7 @@ export default function Navbar() {
       <div
         className="absolute right-8 top-full w-40 overflow-hidden transition-all duration-100"
         style={{
-          clipPath: isDropDownOpen ? "inset(0 0 0 0)" : "inset(0 0 100% 0)",
+          clipPath: isDropdownOpen ? "inset(0 0 0 0)" : "inset(0 0 100% 0)",
         }}
       >
         <div className="bg-zinc-800 border border-zinc-700 rounded-b-md">
