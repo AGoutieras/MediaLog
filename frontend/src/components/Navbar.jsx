@@ -48,7 +48,7 @@ export default function Navbar() {
     <nav className="relative flex items-center justify-between px-8 py-4 border-b border-zinc-800">
       {/* Title */}
       <div>
-        <p>MediaLog</p>
+        <p className="font-bold text-white text-lg">MediaLog</p>
       </div>
 
       {/* Tabs */}
@@ -79,7 +79,7 @@ export default function Navbar() {
 
       {/* Avatar */}
       <div
-        className="relative"
+        className="relative cursor-pointer select-none"
         onClick={() => setIsDropDownOpen(!isDropDownOpen)}
       >
         <div
