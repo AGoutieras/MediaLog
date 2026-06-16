@@ -26,14 +26,14 @@ export default function MediaCard({ result, onAdd }) {
               alt={`${result.title} cover`}
             />
           ) : (
-            <div className='w-full h-full bg-zinc-600 flex items-center justify-center text-white text-xs'>
+            <div className='w-full h-full bg-zinc-600 flex items-center justify-center text-white text-[10px] text-center px-2'>
               {result.title}
             </div>
           )}
         </div>
-        <div className='flex-1 text-white'>
-          <div className='flex gap-2'>
-            <p>{result.title}</p>
+        <div className='flex-1 text-white min-w-0'>
+          <div className='flex gap-2 items-center'>
+            <p className='truncate'>{result.title}</p>
             <span
               className={`rounded-full px-2 py-1 text-sm ${
                 result.media_type === 'game'
