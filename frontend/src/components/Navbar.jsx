@@ -1,5 +1,7 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { House, Search, LogOut } from "lucide-react";
+import { useState } from "react";
 
 export default function Navbar() {
   const colors = [
@@ -24,9 +26,13 @@ export default function Navbar() {
     "bg-zinc-950",
   ];
 
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
   if (!user) return null;
+
   const avatarColor = colors[user.username.charCodeAt(0) % colors.length];
+
   const initials = user.username.includes(" ")
     ? user.username
         .split(" ")
@@ -36,8 +42,10 @@ export default function Navbar() {
         .slice(0, 2)
     : user.username[0].toUpperCase();
 
+  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+
   return (
-    <nav className="flex items-center justify-between px-8 py-4 border-b border-zinc-800">
+    <nav className="relative flex items-center justify-between px-8 py-4 border-b border-zinc-800">
       {/* Title */}
       <div>
         <p>MediaLog</p>
@@ -48,26 +56,57 @@ export default function Navbar() {
         <NavLink
           to="/dashboard"
           className={({ isActive }) =>
-            isActive ? "text-white" : "text-zinc-400 hover:text-white"
+            isActive
+              ? "text-white flex items-center gap-1"
+              : "text-zinc-400 hover:text-white flex items-center gap-1"
           }
         >
+          <House size={18} />
           Dashboard
         </NavLink>
         <NavLink
           to="/search"
           className={({ isActive }) =>
-            isActive ? "text-white" : "text-zinc-400 hover:text-white"
+            isActive
+              ? "text-white flex items-center gap-1"
+              : "text-zinc-400 hover:text-white flex items-center gap-1"
           }
         >
+          <Search size={18} />
           Search
         </NavLink>
       </div>
 
       {/* Avatar */}
       <div
-        className={`w-9 h-9 rounded-full ${avatarColor} flex items-center justify-center text-white text-sm font-bold`}
+        className="relative"
+        onClick={() => setIsDropDownOpen(!isDropDownOpen)}
       >
-        {initials}
+        <div
+          className={`w-9 h-9 rounded-full ${avatarColor} flex items-center justify-center text-white text-sm font-bold`}
+        >
+          {initials}
+        </div>
+      </div>
+      {/* Dropdown */}
+      <div
+        className="absolute right-8 top-full w-40 overflow-hidden transition-all duration-100"
+        style={{
+          clipPath: isDropDownOpen ? "inset(0 0 0 0)" : "inset(0 0 100% 0)",
+        }}
+      >
+        <div className="bg-zinc-800 border border-zinc-700 rounded-b-md">
+          <button
+            className="w-full text-left px-4 py-2 text-red-400 hover:text-red-500 hover:cursor-pointer flex items-center gap-1"
+            onClick={() => {
+              logout();
+              navigate("/login");
+            }}
+          >
+            <LogOut size={16} />
+            Logout
+          </button>
+        </div>
       </div>
     </nav>
   );
