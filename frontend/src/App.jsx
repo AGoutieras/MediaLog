@@ -1,7 +1,17 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import SearchPage from './pages/SearchPage'
-import LoginPage from './pages/LoginPage'
-import ProtectedRoute from './components/ProtectedRoute'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import SearchPage from "./pages/SearchPage";
+import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Navbar from "./components/Navbar";
+
+function PrivateLayout({ children }) {
+  return (
+    <div>
+      <Navbar />
+      {children}
+    </div>
+  );
+}
 
 function App() {
   return (
@@ -13,7 +23,9 @@ function App() {
             path="/search"
             element={
               <ProtectedRoute>
-                <SearchPage />
+                <PrivateLayout>
+                  <SearchPage />
+                </PrivateLayout>
               </ProtectedRoute>
             }
           />
@@ -21,7 +33,7 @@ function App() {
         </Routes>
       </div>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
