@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM user_media JOIN medias ON user_media.media_id = medias.id WHERE user_media.user_id = $1",
+      "SELECT user_media.*, medias.title, medias.year, medias.cover_url, medias.external_id, media_types.name AS media_type FROM user_media JOIN medias ON user_media.media_id = medias.id JOIN media_types ON medias.media_type_id = media_types.id WHERE user_media.user_id = $1",
       [req.user.id],
     );
 
@@ -20,8 +20,16 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { external_id, media_type, title, year, cover_url, status, note, rating } =
-      req.body;
+    const {
+      external_id,
+      media_type,
+      title,
+      year,
+      cover_url,
+      status,
+      note,
+      rating,
+    } = req.body;
 
     const result = await pool.query(
       "SELECT id FROM media_types WHERE name = $1",
