@@ -35,13 +35,13 @@ export default function MediaCard({ result, onAdd }) {
           <div className='flex gap-2 items-center'>
             <p className='truncate'>{result.title}</p>
             <span
-              className={`rounded-full px-2 py-1 text-sm ${
+              className={`rounded-md px-2 py-1 text-sm ${
                 result.media_type === 'game'
-                  ? 'bg-purple-800'
+                  ? 'bg-[#0070CC]'
                   : result.media_type === 'movie'
-                  ? 'bg-orange-800'
+                  ? 'bg-[#B20710]'
                   : result.media_type === 'series'
-                  ? 'bg-green-800'
+                  ? 'bg-[#0F9D58]'
                   : 'bg-zinc-600'
               }`}
             >
