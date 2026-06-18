@@ -19,12 +19,12 @@ export default function StatsBar({ entries }) {
           <p className="text-zinc-500 text-sm">Total entries</p>
         </div>
         <div className="text-center">
-          <p className="text-white text-2xl font-bold">{planned}</p>
-          <p className="text-zinc-500 text-sm">Planned</p>
-        </div>
-        <div className="text-center">
           <p className="text-white text-2xl font-bold">{inProgress}</p>
           <p className="text-zinc-500 text-sm">In Progress</p>
+        </div>
+        <div className="text-center">
+          <p className="text-white text-2xl font-bold">{planned}</p>
+          <p className="text-zinc-500 text-sm">Planned</p>
         </div>
         <div className="text-center">
           <p className="text-white text-2xl font-bold">{done}</p>

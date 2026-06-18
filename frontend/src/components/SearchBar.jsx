@@ -7,7 +7,7 @@ export default function SearchBar({
 }) {
 	const inputClass =
 		'bg-zinc-800 border border-zinc-600 text-white rounded-md px-4 py-3 w-full focus:outline-none focus:border-zinc-500';
-	const filterBase = 'text-white rounded-full px-5 py-2 transition';
+	const filterBase = 'text-white rounded-full px-5 py-2 transition cursor-pointer';
 	return (
 		<>
 			<div className='flex max-w-2xl mx-auto gap-2'>
@@ -25,7 +25,7 @@ export default function SearchBar({
 					}}
 				/>
 				<button
-					className='bg-sky-600 hover:bg-sky-500 text-white rounded-md px-4 py-2 transition'
+					className='bg-sky-600 hover:bg-sky-500 text-white rounded-md px-4 py-2 transition cursor-pointer'
 					type='button'
 					onClick={onSearch}
 				>

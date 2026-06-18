@@ -29,7 +29,7 @@ export default function Navbar() {
     <nav className="flex items-center justify-between px-8 py-4 border-b border-zinc-800 sticky top-0 z-10 bg-zinc-950">
       {/* Title */}
       <div>
-        <p className="font-bold text-white text-lg">MediaLog</p>
+        <p className="font-bold text-white text-lg select-none">MediaLog</p>
       </div>
 
       {/* Tabs */}
@@ -60,7 +60,7 @@ export default function Navbar() {
 
       {/* Avatar */}
       <div
-        className="relative cursor-pointer select-none"
+        className="relative cursor-pointer select-none transition-transform duration-100 hover:scale-110 will-change-transform"
         onClick={(e) => {
           e.stopPropagation();
           setIsDropdownOpen(!isDropdownOpen);

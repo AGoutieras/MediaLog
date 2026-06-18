@@ -35,7 +35,7 @@ export default function MediaCard({ result, onAdd }) {
           <div className='flex gap-2 items-center'>
             <p className='truncate'>{result.title}</p>
             <span
-              className={`rounded-md px-2 py-1 text-sm ${
+              className={`rounded-md px-2 py-1 text-sm select-none ${
                 result.media_type === 'game'
                   ? 'bg-[#0070CC]'
                   : result.media_type === 'movie'
@@ -52,7 +52,7 @@ export default function MediaCard({ result, onAdd }) {
         </div>
         <div className='relative'>
           <button
-            className='text-sky-600 rounded-full px-4 py-2 border border-transparent hover:border hover:border-sky-500 transition '
+            className='text-sky-600 rounded-full px-4 py-2 border border-transparent hover:border hover:border-sky-500 transition cursor-pointer'
             type='button'
             onClick={(e) => {
               e.stopPropagation();
@@ -64,19 +64,19 @@ export default function MediaCard({ result, onAdd }) {
           {isDropdownOpen && (
             <div className='bg-zinc-800 border border-zinc-600 absolute left-full top-1/2 -translate-y-1/2 text-sky-600 ml-2 flex flex-col w-34 rounded-md'>
               <button
-                className='hover:bg-zinc-700 py-1.5 px-4 text-left'
+                className='hover:bg-zinc-700 py-1.5 px-4 text-left cursor-pointer'
                 onClick={() => onAdd(result, 'Planned')}
               >
                 Planned
               </button>
               <button
-                className='hover:bg-zinc-700 py-1.5 px-4 text-left'
+                className='hover:bg-zinc-700 py-1.5 px-4 text-left cursor-pointer'
                 onClick={() => onAdd(result, 'In Progress')}
               >
                 In Progress
               </button>
               <button
-                className='hover:bg-zinc-700 py-1.5 px-4 text-left'
+                className='hover:bg-zinc-700 py-1.5 px-4 text-left cursor-pointer'
                 onClick={() => onAdd(result, 'Done')}
               >
                 Done

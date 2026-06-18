@@ -37,7 +37,7 @@ export default function Avatar({
     : username[0].toUpperCase();
   return (
     <div
-      className={`${size} rounded-full ${avatarColor} flex items-center justify-center text-white ${textSize} font-bold`}
+      className={`${size} rounded-full ${avatarColor} flex items-center justify-center text-white ${textSize} font-bold select-none`}
     >
       {initials}
     </div>

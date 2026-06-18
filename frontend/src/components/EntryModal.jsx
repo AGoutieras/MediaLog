@@ -47,7 +47,7 @@ export default function EntryModal({ media, onClose, onAdd, selectedStatus }) {
               )}
             </div>
             <span
-              className={`rounded-md px-2 py-1 text-zinc-200 text-sm w-fit ${
+              className={`select-none rounded-md px-2 py-1 text-zinc-200 text-sm w-fit ${
                 media.media_type === "game"
                   ? "bg-[#0070CC]"
                   : media.media_type === "movie"
@@ -156,7 +156,7 @@ export default function EntryModal({ media, onClose, onAdd, selectedStatus }) {
         {/* confirm button */}
         <div className="flex justify-end gap-2 mt-6">
           <button
-            className="bg-sky-600 hover:bg-sky-500 text-white rounded-md px-4 py-2 w-fit transition"
+            className="bg-sky-600 hover:bg-sky-500 text-white rounded-md px-4 py-2 w-fit transition cursor-pointer"
             onClick={() => onAdd(note, rating)}
           >
             Confirm
