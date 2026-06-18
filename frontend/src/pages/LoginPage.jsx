@@ -58,14 +58,14 @@ export default function LoginPage() {
       const data = await response.json()
 
       login(data.token, data.user)
-      navigate('/search')
+      navigate('/dashboard')
     } catch (err) {
       console.error(err)
     }
   }
 
   if (token) {
-    return <Navigate to="/search" />
+    return <Navigate to="/dashboard" />
   }
 
   return (
