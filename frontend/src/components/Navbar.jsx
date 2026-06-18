@@ -26,7 +26,7 @@ export default function Navbar() {
   if (!user) return null;
 
   return (
-    <nav className="relative flex items-center justify-between px-8 py-4 border-b border-zinc-800">
+    <nav className="flex items-center justify-between px-8 py-4 border-b border-zinc-800 sticky top-0 z-10 bg-zinc-950">
       {/* Title */}
       <div>
         <p className="font-bold text-white text-lg">MediaLog</p>

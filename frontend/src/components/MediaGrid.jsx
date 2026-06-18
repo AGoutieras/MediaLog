@@ -9,7 +9,7 @@ export default function MediaGrid({ entries }) {
         return (
           <div key={status} className='mb-8'>
             <p className='text-zinc-400 mb-2'>{status}</p>
-            <div className='flex flex-wrap gap-4'>
+            <div className='grid grid-cols-6 gap-4'>
               {items.map((entry) => (
                 <MediaTile key={entry.id} entry={entry} />
               ))}

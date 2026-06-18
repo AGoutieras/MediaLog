@@ -18,7 +18,7 @@ export default function DashboardPage() {
     fetchEntries();
   }, []);
   return (
-    <div className='px-8'>
+    <div className='max-w-5xl mx-auto px-8'>
       <StatsBar entries={entries} />
       <MediaGrid entries={entries} />
     </div>
