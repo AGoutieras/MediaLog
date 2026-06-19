@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import EntryDetailModal from './EntryDetailModal'
 import { useAuth } from '../context/AuthContext'
+import EntryModal from './EntryModal'
 
 export default function MediaGrid({ entries, refetch }) {
   const statuses = ['In Progress', 'Planned', 'Done']
@@ -19,6 +20,7 @@ export default function MediaGrid({ entries, refetch }) {
   const [sortBy, setSortBy] = useState({})
   const [openSortStatus, setOpenSortStatus] = useState(null)
   const [selectedEntry, setSelectedEntry] = useState(null)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const { token } = useAuth()
 
   function sortItems(items, sort) {
@@ -48,6 +50,28 @@ export default function MediaGrid({ entries, refetch }) {
         headers: { Authorization: `Bearer ${token}` },
       })
       refetch()
+      setSelectedEntry(null)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  function handleEdit() {
+    setIsEditModalOpen(true)
+  }
+
+  async function handleUpdateEntry(note, rating) {
+    try {
+      await fetch(`http://localhost:3000/entries/${selectedEntry.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: selectedEntry.status, note, rating }),
+      })
+      refetch()
+      setIsEditModalOpen(false)
       setSelectedEntry(null)
     } catch (err) {
       console.error(err)
@@ -186,12 +210,27 @@ export default function MediaGrid({ entries, refetch }) {
           onAdded={refetch}
         />
       )}
-      {selectedEntry && (
+      {selectedEntry && !isEditModalOpen && (
         <EntryDetailModal
           entry={selectedEntry}
           onClose={() => setSelectedEntry(null)}
-          onEdit={() => {}}
+          onEdit={handleEdit}
           onDelete={() => handleDelete(selectedEntry.id)}
+        />
+      )}
+
+      {isEditModalOpen && selectedEntry && (
+        <EntryModal
+          media={selectedEntry}
+          selectedStatus={selectedEntry.status}
+          onClose={() => {
+            setIsEditModalOpen(false)
+            setSelectedEntry(null)
+          }}
+          onAdd={handleUpdateEntry}
+          initialNote={selectedEntry.note}
+          initialRating={selectedEntry.rating}
+          isEditing={true}
         />
       )}
     </div>
