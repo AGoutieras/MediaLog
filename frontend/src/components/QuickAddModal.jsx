@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { X } from "lucide-react";
+import { X, EllipsisVertical, } from "lucide-react";
 import EntryModal from "./EntryModal";
 
 export default function QuickAddModal({ status, onClose, onAdded }) {
@@ -37,6 +37,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
         },
         body: JSON.stringify({
           external_id: selectedMedia.external_id,
+          slug: selectedMedia.slug,
           media_type: selectedMedia.media_type,
           title: selectedMedia.title,
           year: selectedMedia.year,

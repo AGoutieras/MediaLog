@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT user_media.*, medias.title, medias.year, medias.cover_url, medias.external_id, media_types.name AS media_type FROM user_media JOIN medias ON user_media.media_id = medias.id JOIN media_types ON medias.media_type_id = media_types.id WHERE user_media.user_id = $1",
+      "SELECT user_media.*, medias.title, medias.year, medias.cover_url, medias.external_id, medias.slug, media_types.name AS media_type FROM user_media JOIN medias ON user_media.media_id = medias.id JOIN media_types ON medias.media_type_id = media_types.id WHERE user_media.user_id = $1",
       [req.user.id],
     );
 
@@ -22,6 +22,7 @@ router.post("/", async (req, res) => {
   try {
     const {
       external_id,
+      slug,
       media_type,
       title,
       year,
@@ -45,21 +46,11 @@ router.post("/", async (req, res) => {
     const mediaTypeId = result.rows[0].id;
 
     const mediaEntry = await pool.query(
-      "INSERT INTO medias (external_id, media_type_id, title, year, cover_url) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (external_id, media_type_id) DO NOTHING RETURNING *",
-      [external_id, mediaTypeId, title, year, cover_url],
+      "INSERT INTO medias (external_id, slug, media_type_id, title, year, cover_url) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (external_id, media_type_id) DO UPDATE SET cover_url = EXCLUDED.cover_url, slug = EXCLUDED.slug RETURNING *",
+      [external_id, slug, mediaTypeId, title, year, cover_url],
     );
 
-    let mediaId;
-
-    if (mediaEntry.rows.length > 0) {
-      mediaId = mediaEntry.rows[0].id;
-    } else {
-      const existingMedia = await pool.query(
-        "SELECT id FROM medias WHERE external_id = $1 AND media_type_id = $2",
-        [external_id, mediaTypeId],
-      );
-      mediaId = existingMedia.rows[0].id;
-    }
+    const mediaId = mediaEntry.rows[0].id
 
     const insertMedia = await pool.query(
       "INSERT INTO user_media (user_id, media_id, status, note, rating) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (user_id, media_id) DO NOTHING RETURNING *",

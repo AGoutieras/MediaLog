@@ -10,28 +10,48 @@ import {
   ArrowDown01,
   ArrowUp01,
 } from 'lucide-react'
+import EntryDetailModal from './EntryDetailModal'
+import { useAuth } from '../context/AuthContext'
 
 export default function MediaGrid({ entries, refetch }) {
   const statuses = ['In Progress', 'Planned', 'Done']
   const [openModalStatus, setOpenModalStatus] = useState(null)
   const [sortBy, setSortBy] = useState({})
   const [openSortStatus, setOpenSortStatus] = useState(null)
+  const [selectedEntry, setSelectedEntry] = useState(null)
+  const { token } = useAuth()
 
   function sortItems(items, sort) {
     const sorted = [...items]
     if (sort === 'date_desc')
-      return sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      return sorted.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      )
     if (sort === 'date_asc')
-      return sorted.sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+      return sorted.sort(
+        (a, b) => new Date(a.created_at) - new Date(b.created_at)
+      )
     if (sort === 'az')
       return sorted.sort((a, b) => a.title.localeCompare(b.title))
     if (sort === 'za')
       return sorted.sort((a, b) => b.title.localeCompare(a.title))
     if (sort === 'rating_desc')
       return sorted.sort((a, b) => b.rating - a.rating)
-    if (sort === 'rating_asc')
-      return sorted.sort((a, b) => a.rating - b.rating)
+    if (sort === 'rating_asc') return sorted.sort((a, b) => a.rating - b.rating)
     return sorted
+  }
+
+  async function handleDelete(entryId) {
+    try {
+      await fetch(`http://localhost:3000/entries/${entryId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      refetch()
+      setSelectedEntry(null)
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   return (
@@ -45,16 +65,40 @@ export default function MediaGrid({ entries, refetch }) {
         const sortOptions =
           status === 'Done'
             ? [
-                { value: 'date_desc', label: 'Date added', icon: CalendarArrowDown },
-                { value: 'date_asc', label: 'Date added', icon: CalendarArrowUp },
+                {
+                  value: 'date_desc',
+                  label: 'Date added',
+                  icon: CalendarArrowDown,
+                },
+                {
+                  value: 'date_asc',
+                  label: 'Date added',
+                  icon: CalendarArrowUp,
+                },
                 { value: 'az', label: 'Title A-Z', icon: ArrowDownAZ },
                 { value: 'za', label: 'Title Z-A', icon: ArrowUpAZ },
-                { value: 'rating_desc', label: 'Personal rating', icon: ArrowDown01 },
-                { value: 'rating_asc', label: 'Personal rating', icon: ArrowUp01 },
+                {
+                  value: 'rating_desc',
+                  label: 'Personal rating',
+                  icon: ArrowDown01,
+                },
+                {
+                  value: 'rating_asc',
+                  label: 'Personal rating',
+                  icon: ArrowUp01,
+                },
               ]
             : [
-                { value: 'date_desc', label: 'Date added', icon: CalendarArrowDown },
-                { value: 'date_asc', label: 'Date added', icon: CalendarArrowUp },
+                {
+                  value: 'date_desc',
+                  label: 'Date added',
+                  icon: CalendarArrowDown,
+                },
+                {
+                  value: 'date_asc',
+                  label: 'Date added',
+                  icon: CalendarArrowUp,
+                },
                 { value: 'az', label: 'Title A-Z', icon: ArrowDownAZ },
                 { value: 'za', label: 'Title Z-A', icon: ArrowUpAZ },
               ]
@@ -75,13 +119,18 @@ export default function MediaGrid({ entries, refetch }) {
                   <span className="text-zinc-200 select-none">Sort by:</span>
                   <button
                     onClick={() =>
-                      setOpenSortStatus(openSortStatus === status ? null : status)
+                      setOpenSortStatus(
+                        openSortStatus === status ? null : status
+                      )
                     }
                     className="text-zinc-400 hover:text-white cursor-pointer flex items-center gap-1"
                   >
-                    {sortOptions.find(opt => opt.value === currentSort)?.label || 'Date added'}
+                    {sortOptions.find(opt => opt.value === currentSort)
+                      ?.label || 'Date added'}
                     {(() => {
-                      const CurrentIcon = sortOptions.find(opt => opt.value === currentSort)?.icon
+                      const CurrentIcon = sortOptions.find(
+                        opt => opt.value === currentSort
+                      )?.icon
                       return CurrentIcon ? <CurrentIcon size={14} /> : null
                     })()}
                   </button>
@@ -91,7 +140,9 @@ export default function MediaGrid({ entries, refetch }) {
                   className="absolute right-0 top-full w-44 overflow-hidden transition-all duration-100 z-10"
                   style={{
                     clipPath:
-                      openSortStatus === status ? 'inset(0 0 0 0)' : 'inset(0 0 100% 0)',
+                      openSortStatus === status
+                        ? 'inset(0 0 0 0)'
+                        : 'inset(0 0 100% 0)',
                   }}
                 >
                   <div className="bg-zinc-800 border border-zinc-700 rounded-md mt-1">
@@ -115,7 +166,13 @@ export default function MediaGrid({ entries, refetch }) {
 
             <div className="grid grid-cols-6 gap-4">
               {sortedItems.map(entry => (
-                <MediaTile key={entry.id} entry={entry} />
+                <div
+                  key={entry.id}
+                  onClick={() => setSelectedEntry(entry)}
+                  className="cursor-pointer"
+                >
+                  <MediaTile entry={entry} />
+                </div>
               ))}
             </div>
           </div>
@@ -127,6 +184,14 @@ export default function MediaGrid({ entries, refetch }) {
           status={openModalStatus}
           onClose={() => setOpenModalStatus(null)}
           onAdded={refetch}
+        />
+      )}
+      {selectedEntry && (
+        <EntryDetailModal
+          entry={selectedEntry}
+          onClose={() => setSelectedEntry(null)}
+          onEdit={() => {}}
+          onDelete={() => handleDelete(selectedEntry.id)}
         />
       )}
     </div>
