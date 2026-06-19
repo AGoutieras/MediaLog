@@ -48,6 +48,7 @@ export default function SearchPage() {
         },
         body: JSON.stringify({
           external_id: selectedMedia.external_id,
+          slug: selectedMedia.slug,
           media_type: selectedMedia.media_type,
           title: selectedMedia.title,
           year: selectedMedia.year,
