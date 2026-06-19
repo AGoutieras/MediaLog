@@ -6,6 +6,7 @@ export default function MediaGrid({ entries }) {
     <div>
       {statuses.map((status) => {
         const items = entries.filter((e) => e.status === status);
+        if (items.length === 0) return null;
         return (
           <div key={status} className='mb-8'>
             <p className='text-zinc-400 mb-2'>{status}</p>
