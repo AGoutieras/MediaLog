@@ -14,8 +14,9 @@ import EntryDetailModal from './EntryDetailModal'
 import { useAuth } from '../context/AuthContext'
 import EntryModal from './EntryModal'
 
-export default function MediaGrid({ entries, refetch }) {
-  const statuses = ['In Progress', 'Planned', 'Done']
+export default function MediaGrid({ entries, statusFilter, refetch }) {
+  const allStatuses = ['In Progress', 'Planned', 'Done']
+  const statuses = statusFilter === 'all' ? allStatuses : [statusFilter]
   const [openModalStatus, setOpenModalStatus] = useState(null)
   const [sortBy, setSortBy] = useState({})
   const [openSortStatus, setOpenSortStatus] = useState(null)
@@ -82,7 +83,6 @@ export default function MediaGrid({ entries, refetch }) {
     <div>
       {statuses.map(status => {
         const items = entries.filter(e => e.status === status)
-        if (items.length === 0) return null
         const currentSort = sortBy[status] || 'date_desc'
         const sortedItems = sortItems(items, currentSort)
 
@@ -188,17 +188,23 @@ export default function MediaGrid({ entries, refetch }) {
               </div>
             </div>
 
-            <div className="grid grid-cols-6 gap-4">
-              {sortedItems.map(entry => (
-                <div
-                  key={entry.id}
-                  onClick={() => setSelectedEntry(entry)}
-                  className="cursor-pointer"
-                >
-                  <MediaTile entry={entry} />
-                </div>
-              ))}
-            </div>
+            {items.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-8 text-zinc-500">
+                <p className="text-sm">No {status.toLowerCase()} entries yet</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-6 gap-4">
+                {sortedItems.map(entry => (
+                  <div
+                    key={entry.id}
+                    onClick={() => setSelectedEntry(entry)}
+                    className="cursor-pointer"
+                  >
+                    <MediaTile entry={entry} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )
       })}

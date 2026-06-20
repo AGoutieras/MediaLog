@@ -59,7 +59,11 @@ export default function DashboardPage() {
         typeFilters={typeFilters}
         toggleTypeFilter={toggleTypeFilter}
       />
-      <MediaGrid entries={filteredEntries} refetch={fetchEntries} />
+      <MediaGrid
+        entries={filteredEntries}
+        statusFilter={statusFilter}
+        refetch={fetchEntries}
+      />
     </div>
   );
 }
