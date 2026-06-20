@@ -198,7 +198,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
                   <div
                     key={entry.id}
                     onClick={() => setSelectedEntry(entry)}
-                    className="cursor-pointer"
+                    className="cursor-pointer w-fit"
                   >
                     <MediaTile entry={entry} />
                   </div>
