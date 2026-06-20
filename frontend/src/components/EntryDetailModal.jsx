@@ -69,12 +69,12 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
           </button>
         </div>
 
-        {/*  */}
+        {/* note */}
         {entry.note && (
           <p className="text-zinc-300 text-sm mt-2">{entry.note}</p>
         )}
 
-        {/*  */}
+        {/* rating */}
         {entry.rating && (
           <div className="flex items-center gap-1 mt-2">
             {[1, 2, 3, 4, 5].map(star => {
@@ -102,7 +102,12 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
                 </div>
               )
             })}
-            <span className="text-white text-sm ml-1">{parseFloat(entry.rating) % 1 === 0 ? parseInt(entry.rating) : entry.rating}/5</span>
+            <span className="text-white text-sm ml-1">
+              {parseFloat(entry.rating) % 1 === 0
+                ? parseInt(entry.rating)
+                : entry.rating}
+              /5
+            </span>
           </div>
         )}
         {/* Footer: external link + menu */}
@@ -112,7 +117,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
               href={getExternalUrl(entry)}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sky-500 hover:text-sky-400 text-sm"
+              className="text-sky-500 hover:text-sky-400 text-sm border border-sky-500 hover:border-sky-400 rounded-md px-2 py-1"
             >
               View details
             </a>
@@ -123,28 +128,34 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
           <div className="relative">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-zinc-400 hover:text-white cursor-pointer"
+              className="text-zinc-400 hover:text-white cursor-pointer border border-zinc-600 rounded-md px-1 py-1"
             >
               <EllipsisVertical size={18} />
             </button>
-            {isMenuOpen && (
-              <div className="absolute right-0 bottom-full mb-1 bg-zinc-700 border border-zinc-600 rounded-md w-32 z-10">
+
+            <div
+              className="absolute right-0 bottom-full mb-1 w-32 overflow-hidden transition-all duration-100 z-10"
+              style={{
+                clipPath: isMenuOpen ? 'inset(0 0 0 0)' : 'inset(100% 0 0 0)',
+              }}
+            >
+              <div className="bg-zinc-700 border border-zinc-600 rounded-md">
                 <button
                   onClick={onEdit}
-                  className="w-full text-left px-2 text-sm text-zinc-300 hover:bg-zinc-600 cursor-pointer flex items-center gap-2"
+                  className="w-full text-left px-2 py-2 text-sm text-zinc-300 hover:bg-zinc-600 cursor-pointer flex items-center gap-2"
                 >
                   <Pencil size={14} />
                   Edit
                 </button>
                 <button
                   onClick={onDelete}
-                  className="w-full text-left px-2 text-sm text-red-400 hover:bg-zinc-600 cursor-pointer flex items-center gap-2"
+                  className="w-full text-left px-2 py-2 text-sm text-red-400 hover:bg-zinc-600 cursor-pointer flex items-center gap-2"
                 >
                   <Trash2 size={14} />
                   Delete
                 </button>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
