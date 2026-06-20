@@ -50,7 +50,7 @@ export default function MediaTile({ entry }) {
       {entry.rating && (
         <span className='absolute bottom-0 left-0 bg-black/40 rounded-tr-md px-2 py-0.5 text-white text-xs font-bold flex items-center gap-1'>
           <Star size={12} fill='#FFB800' stroke='#FFB800' />
-          {entry.rating}
+          {parseFloat(entry.rating) % 1 === 0 ? parseInt(entry.rating) : entry.rating}/5
         </span>
       )}
     </div>

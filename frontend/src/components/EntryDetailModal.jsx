@@ -102,7 +102,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
                 </div>
               )
             })}
-            <span className="text-white text-sm ml-1">{entry.rating}/5</span>
+            <span className="text-white text-sm ml-1">{parseFloat(entry.rating) % 1 === 0 ? parseInt(entry.rating) : entry.rating}/5</span>
           </div>
         )}
         {/* Footer: external link + menu */}
