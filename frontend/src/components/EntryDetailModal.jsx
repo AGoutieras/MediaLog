@@ -17,9 +17,9 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
   }
 
   return (
-    <div className="fixed inset-0 backdrop-blur-xs flex items-center justify-center">
+    <div className="fixed inset-0 backdrop-blur-xs flex justify-center overflow-y-auto z-50 py-[25vh]">
       {/* Modal card */}
-      <div className="bg-zinc-800 rounded-xl p-6 w-96">
+      <div className="bg-zinc-800 rounded-xl p-6 w-150 h-fit">
         {/* Header: cover + title + close button */}
         <div className="flex justify-between items-start mb-4">
           {/* Cover + title */}
