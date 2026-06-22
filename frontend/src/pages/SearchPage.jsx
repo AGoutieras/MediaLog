@@ -1,50 +1,77 @@
-import { useState } from "react";
-import SearchBar from "../components/SearchBar";
-import ResultList from "../components/ResultList";
-import EntryModal from "../components/EntryModal";
+import { useState } from 'react'
+import { useRef, useEffect } from 'react'
+import SearchBar from '../components/SearchBar'
+import ResultList from '../components/ResultList'
+import EntryModal from '../components/EntryModal'
+import debounce from 'lodash.debounce'
 
 export default function SearchPage() {
-  const [results, setResults] = useState([]);
-  const [query, setQuery] = useState("");
-  const [type, setType] = useState("all");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [results, setResults] = useState([])
+  const [query, setQuery] = useState('')
+  const [type, setType] = useState('all')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedMedia, setSelectedMedia] = useState(null)
+  const [selectedStatus, setSelectedStatus] = useState(null)
+  const [isSearching, setIsSearching] = useState(false)
 
-  async function handleSearch() {
+  const debouncedSearch = useRef(
+    debounce(searchQuery => {
+      handleSearch(searchQuery)
+    }, 500)
+  ).current
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel()
+    }
+  }, [debouncedSearch])
+
+  async function handleSearch(searchQuery = query) {
     try {
       const response = await fetch(
-        `http://localhost:3000/search?q=${query}&type=${type}`,
+        `http://localhost:3000/search?q=${searchQuery}&type=${type}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
-      );
-      const data = await response.json();
-      setResults(data);
+      )
+      const data = await response.json()
+      setResults(data)
     } catch (err) {
-      console.error(err);
+      console.error(err)
+    } finally {
+      setIsSearching(false)
     }
   }
 
+  useEffect(() => {
+    if (query.trim() === '') {
+      setResults([])
+      setIsSearching(false)
+      return
+    }
+    setIsSearching(true)
+    debouncedSearch(query)
+  }, [query])
+
   function handleAddMedia(media, status) {
-    setSelectedMedia(media);
-    setSelectedStatus(status);
-    setIsModalOpen(true);
+    setSelectedMedia(media)
+    setSelectedStatus(status)
+    setIsModalOpen(true)
   }
 
   function handleClose() {
-    setIsModalOpen(false);
+    setIsModalOpen(false)
   }
 
   async function handleConfirm(note, rating) {
     try {
-      const response = await fetch("http://localhost:3000/entries", {
-        method: "POST",
+      const response = await fetch('http://localhost:3000/entries', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify({
           external_id: selectedMedia.external_id,
@@ -57,11 +84,11 @@ export default function SearchPage() {
           note: note,
           rating: rating,
         }),
-      });
-      const data = await response.json();
-      handleClose();
+      })
+      const data = await response.json()
+      handleClose()
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
   }
 
@@ -73,7 +100,7 @@ export default function SearchPage() {
           setQuery={setQuery}
           type={type}
           setType={setType}
-          onSearch={handleSearch}
+          isSearching={isSearching}
         />
         <ResultList results={results} onAdd={handleAddMedia} />
         {isModalOpen && (
@@ -86,5 +113,5 @@ export default function SearchPage() {
         )}
       </div>
     </>
-  );
+  )
 }
