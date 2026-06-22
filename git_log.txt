@@ -1,0 +1,21 @@
+49d0fd5 2026-06-02 feat: switch from RAWG to IGDB for game search
+8ed7794 2026-05-31 feat: style SearchBar and filter buttons
+a02b60d 2026-05-31 feat: add search UI with styling
+10c5186 2026-05-31 feat: add search UI components
+218bc88 2026-05-31 feat: add search UI components
+612c9f0 2026-05-30 feat: add TMDB integration for movies and series
+a6489e5 2026-05-30 fix: correct formatting and error handling in entries route
+892688f 2026-05-30 refactor: streamline server listen function syntax
+c71d172 2026-05-30 feat: add search endpoint with RAWG integration
+a15f712 2026-05-28 feat: add entries GET endpoint
+698fe8a 2026-05-28 feat: add JWT middleware
+c9f3035 2026-05-28 feat: extend JWT expiration time to 24 hours for login and registration
+2f241db 2026-05-26 feat: add login endpoint
+312ef5e 2026-05-26 feat: add register endpoint
+1cd67ec 2026-05-25 chore: init frontend with React + Tailwind
+7394864 2026-05-25 fix: remove unique constraint on external_id in schema
+a832f47 2026-05-25 chore: add database schema
+0c0b35b 2026-05-25 chore: add database connection
+6bbb318 2026-05-25 chore: init backend setup
+0a4a178 2026-05-25 chore: init project structure
+40ae741 2026-04-30 Initial commit
