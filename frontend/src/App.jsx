@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
+import ProfilePage from "./pages/ProfilePage";
 
 function PrivateLayout({ children }) {
   return (
@@ -36,6 +37,16 @@ function App() {
               <ProtectedRoute>
                 <PrivateLayout>
                   <SearchPage />
+                </PrivateLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <PrivateLayout>
+                  <ProfilePage />
                 </PrivateLayout>
               </ProtectedRoute>
             }
