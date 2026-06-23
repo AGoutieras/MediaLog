@@ -2,6 +2,7 @@ import express from 'express'
 import { pool } from '../db/index.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import authMiddleware from '../middleware/auth.js'
 
 const router = express.Router()
 
@@ -95,6 +96,42 @@ router.post('/login', async (req, res) =>
     {
       message: "Internal server error"
     })
+  }
+})
+
+router.put('/profile', authMiddleware, async (req, res) => {
+  try {
+    const { username, email, password } = req.body
+    const userId = req.user.id
+
+    let hashedPassword = null
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, 10)
+    }
+
+    const result = await pool.query(
+      `UPDATE users SET
+        username = COALESCE($1, username),
+        email = COALESCE($2, email),
+        hashed_password = COALESCE($3, hashed_password)
+       WHERE id = $4
+       RETURNING id, email, username`,
+      [username, email, hashedPassword, userId]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    const token = jwt.sign(result.rows[0], process.env.JWT_SECRET, { expiresIn: '24h' })
+
+    return res.status(200).json({ token, user: result.rows[0] })
+  } catch (err) {
+    if (err.code === '23505') {
+      return res.status(409).json({ message: 'Email already in use.' })
+    }
+    console.error(err.message)
+    return res.status(500).json({ message: 'Internal server error'})
   }
 })
 
