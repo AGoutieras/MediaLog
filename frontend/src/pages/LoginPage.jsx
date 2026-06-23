@@ -49,6 +49,8 @@ export default function LoginPage() {
         const data = await response.json()
         if (data.message === 'Email already in use.') {
           setError({ email: data.message })
+        } else if (data.message === 'Username already in use') {
+          setError({ username: data.message })
         } else {
           setError({ general: data.message || 'An error occured' })
         }

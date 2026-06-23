@@ -44,6 +44,14 @@ router.post('/register', async (req, res) =>
   }
   catch (err)
   {
+    if (err.code === '23505') {
+      if (err.constraint === 'users_username_lower_key') {
+        return res.status(409).json({ message: 'Username already in use'})
+      }
+      if (err.constraint === 'users_email_key') {
+        return res.status(409).json({ message: 'Email already in use'})
+      }
+    }
     console.error(err.message)
     return res.status(500).json(
     {
@@ -101,11 +109,27 @@ router.post('/login', async (req, res) =>
 
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
-    const { username, email, password } = req.body
+    const { username, email, password, currentPassword } = req.body
     const userId = req.user.id
 
     let hashedPassword = null
+
     if (password) {
+      if (!currentPassword) {
+        return res.status(400).json({ message: 'Current password is required'})
+      }
+
+      const userResult = await pool.query(
+        'SELECT hashed_password FROM users WHERE id = $1',
+        [userId]
+      )
+
+      const isMatch = await bcrypt.compare(currentPassword, userResult.rows[0].hashed_password)
+
+      if (!isMatch) {
+        return res.status(401).json({ message: 'Current password is incorrect' })
+      }
+
       hashedPassword = await bcrypt.hash(password, 10)
     }
 
@@ -127,11 +151,16 @@ router.put('/profile', authMiddleware, async (req, res) => {
 
     return res.status(200).json({ token, user: result.rows[0] })
   } catch (err) {
-    if (err.code === '23505') {
-      return res.status(409).json({ message: 'Email already in use.' })
-    }
-    console.error(err.message)
-    return res.status(500).json({ message: 'Internal server error'})
+      if (err.code === '23505') {
+        if (err.constraint === 'users_username_lower_key') {
+          return res.status(409).json({ message: 'Username already in use.' })
+        }
+        if (err.constraint === 'users_email_key') {
+          return res.status(409).json({ message: 'Email already in use.' })
+        }
+      }
+      console.error(err.message)
+      return res.status(500).json({ message: 'Internal server error' })
   }
 })
 
