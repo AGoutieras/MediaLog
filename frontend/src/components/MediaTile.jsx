@@ -8,11 +8,11 @@ export default function MediaTile({ entry }) {
         ? 'border-[#B20710]'
         : entry.media_type === 'series'
           ? 'border-[#0F9D58]'
-          : 'border-zinc-600'
+          : 'border-border-strong'
 
   return (
     <div
-      className={`group relative w-32 h-44 rounded-md overflow-hidden bg-zinc-700 border-b-2 border-r-2 ${borderColor}`}
+      className={`group relative w-32 h-44 rounded-md overflow-hidden bg-surface-2 border-b-2 border-r-2 ${borderColor}`}
     >
       {/* Cover */}
       {entry.cover_url ? (
@@ -31,7 +31,7 @@ export default function MediaTile({ entry }) {
       <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 transition-colors duration-100">
         <SquarePen
           size={50}
-          className="text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity duration-100"
+          className="text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-100"
         />
       </div>
 
@@ -48,7 +48,7 @@ export default function MediaTile({ entry }) {
               ? 'bg-[#B20710]'
               : entry.media_type === 'series'
                 ? 'bg-[#0F9D58]'
-                : 'bg-zinc-600'
+                : 'bg-border-strong'
         }`}
       >
         {entry.media_type}
