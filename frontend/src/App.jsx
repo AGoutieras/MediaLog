@@ -18,7 +18,7 @@ function PrivateLayout({ children }) {
 function App() {
   return (
     <BrowserRouter>
-      <div className="bg-zinc-950 min-h-screen">
+      <div className="bg-base min-h-screen">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route
