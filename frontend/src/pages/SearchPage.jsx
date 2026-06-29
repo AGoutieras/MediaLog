@@ -55,6 +55,12 @@ export default function SearchPage() {
     debouncedSearch(query)
   }, [query])
 
+  useEffect(() => {
+    if (query.trim() !== '') {
+      handleSearch(query)
+    }
+  }, [type])
+
   function handleAddMedia(media, status) {
     setSelectedMedia(media)
     setSelectedStatus(status)
