@@ -26,7 +26,7 @@ export default function Navbar() {
   if (!user) return null;
 
   return (
-    <nav className="flex items-center justify-between px-8 py-4 border-b border-zinc-800 sticky top-0 z-10 bg-zinc-950">
+    <nav className="flex items-center justify-between px-8 py-4 border-b border-border sticky top-0 z-10 bg-base">
       {/* Title */}
       <div>
         <p className="font-bold text-white text-lg select-none">MediaLog</p>
@@ -39,7 +39,7 @@ export default function Navbar() {
           className={({ isActive }) =>
             isActive
               ? "text-white flex items-center gap-1"
-              : "text-zinc-400 hover:text-white flex items-center gap-1"
+              : "text-text-muted hover:text-white flex items-center gap-1"
           }
         >
           <House size={18} />
@@ -50,7 +50,7 @@ export default function Navbar() {
           className={({ isActive }) =>
             isActive
               ? "text-white flex items-center gap-1"
-              : "text-zinc-400 hover:text-white flex items-center gap-1"
+              : "text-text-muted hover:text-white flex items-center gap-1"
           }
         >
           <Search size={18} />
@@ -75,9 +75,9 @@ export default function Navbar() {
           clipPath: isDropdownOpen ? "inset(0 0 0 0)" : "inset(0 0 100% 0)",
         }}
       >
-        <div className="bg-zinc-800 border border-zinc-700 rounded-b-md">
+        <div className="bg-surface border border-border-strong rounded-b-md">
           <button
-            className="w-full text-left px-4 py-2 text-zinc-300 hover:text-zinc-400 hover:cursor-pointer flex items-center gap-1"
+            className="w-full text-left px-4 py-2 text-text-secondary hover:text-text-muted hover:cursor-pointer flex items-center gap-1"
             onClick={() => {
               navigate("/profile");
             }}
@@ -86,7 +86,7 @@ export default function Navbar() {
             Edit Profile
           </button>
           <button
-            className="w-full text-left px-4 py-2 text-red-400 hover:text-red-500 hover:cursor-pointer flex items-center gap-1"
+            className="w-full text-left px-4 py-2 text-danger hover:text-red-400 hover:cursor-pointer flex items-center gap-1"
             onClick={() => {
               logout();
               navigate("/login");
