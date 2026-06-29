@@ -130,24 +130,26 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
         return (
           <div key={status} className="mb-8">
             <div className="flex items-center gap-2 mb-2">
-              <p className="text-zinc-400 mb-2">{status}</p>
+              <p className="text-text-muted mb-2">{status}</p>
               <button
                 onClick={() => setOpenModalStatus(status)}
-                className="text-zinc-400 hover:text-white cursor-pointer mb-1.5"
+                className="text-text-muted hover:text-white cursor-pointer mb-1.5"
               >
                 <Plus size={20} />
               </button>
 
               <div className="relative ml-auto">
                 <div className="flex items-center gap-1 text-sm">
-                  <span className="text-zinc-200 select-none">Sort by:</span>
+                  <span className="text-text-primary select-none">
+                    Sort by:
+                  </span>
                   <button
                     onClick={() =>
                       setOpenSortStatus(
                         openSortStatus === status ? null : status
                       )
                     }
-                    className="text-zinc-400 hover:text-white cursor-pointer flex items-center gap-1"
+                    className="text-text-muted hover:text-white cursor-pointer flex items-center gap-1"
                   >
                     {sortOptions.find(opt => opt.value === currentSort)
                       ?.label || 'Date added'}
@@ -169,7 +171,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
                         : 'inset(0 0 100% 0)',
                   }}
                 >
-                  <div className="bg-zinc-800 border border-zinc-700 rounded-md mt-1">
+                  <div className="bg-surface border border-border-strong rounded-md mt-1">
                     {sortOptions.map(opt => (
                       <button
                         key={opt.value}
@@ -177,7 +179,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
                           setSortBy({ ...sortBy, [status]: opt.value })
                           setOpenSortStatus(null)
                         }}
-                        className="w-full text-left px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-700 cursor-pointer flex items-center gap-2"
+                        className="w-full text-left px-3 py-2 text-sm text-text-secondary hover:bg-surface-2 cursor-pointer flex items-center gap-2"
                       >
                         <opt.icon size={14} />
                         {opt.label}
@@ -189,7 +191,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
             </div>
 
             {items.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-8 text-zinc-500">
+              <div className="flex flex-col items-center justify-center py-8 text-text-faint">
                 <p className="text-sm">No {status.toLowerCase()} entries yet</p>
               </div>
             ) : (
