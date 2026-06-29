@@ -8,7 +8,7 @@ export default function SearchBar({
   isSearching,
 }) {
   const inputClass =
-    'bg-zinc-800 border border-zinc-600 text-white rounded-md px-4 py-3 w-full focus:outline-none focus:border-zinc-500'
+    'bg-surface border border-border-strong text-white rounded-md px-4 py-3 w-full focus:outline-none focus:border-accent'
   const filterBase =
     'text-white rounded-full px-5 py-2 transition cursor-pointer'
   return (
@@ -25,7 +25,7 @@ export default function SearchBar({
         {isSearching && (
           <Loader2
             size={18}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 animate-spin"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted animate-spin"
           />
         )}
       </div>
@@ -33,8 +33,8 @@ export default function SearchBar({
         <button
           className={`${
             type === 'all'
-              ? 'bg-sky-600 hover:bg-sky-500'
-              : 'bg-zinc-800 hover:bg-zinc-700'
+              ? 'bg-accent hover:bg-accent-hover'
+              : 'bg-surface hover:bg-surface-2'
           } ${filterBase}`}
           type="button"
           onClick={() => setType('all')}
@@ -44,8 +44,8 @@ export default function SearchBar({
         <button
           className={`${
             type === 'game'
-              ? 'bg-sky-600 hover:bg-sky-500'
-              : 'bg-zinc-800 hover:bg-zinc-700'
+              ? 'bg-accent hover:bg-accent-hover'
+              : 'bg-surface hover:bg-surface-2'
           } ${filterBase}`}
           type="button"
           onClick={() => setType('game')}
@@ -55,8 +55,8 @@ export default function SearchBar({
         <button
           className={`${
             type === 'movie'
-              ? 'bg-sky-600 hover:bg-sky-500'
-              : 'bg-zinc-800 hover:bg-zinc-700'
+              ? 'bg-accent hover:bg-accent-hover'
+              : 'bg-surface hover:bg-surface-2'
           } ${filterBase}`}
           type="button"
           onClick={() => setType('movie')}
@@ -66,8 +66,8 @@ export default function SearchBar({
         <button
           className={`${
             type === 'series'
-              ? 'bg-sky-600 hover:bg-sky-500'
-              : 'bg-zinc-800 hover:bg-zinc-700'
+              ? 'bg-accent hover:bg-accent-hover'
+              : 'bg-surface hover:bg-surface-2'
           } ${filterBase}`}
           type="button"
           onClick={() => setType('series')}
