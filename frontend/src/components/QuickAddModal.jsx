@@ -89,12 +89,12 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
   return (
     <div className="fixed inset-0 backdrop-blur-xs flex items-center justify-center">
       {!isEntryModalOpen && (
-        <div className="bg-zinc-800 rounded-xl p-6 w-2xl">
+        <div className="bg-surface border border-border-strong rounded-xl p-6 w-2xl shadow-[0_34px_70px_-18px_rgba(0,0,0,0.78)]">
           <div className="flex justify-between items-center mb-4">
             <p className="text-white font-semibold">Add to '{status}'</p>
             <button
               onClick={onClose}
-              className="text-zinc-400 hover:cursor-pointer"
+              className="text-text-muted hover:cursor-pointer"
             >
               <X size={20} />
             </button>
@@ -102,7 +102,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
           <div className="relative">
             <input
               type="text"
-              className="bg-zinc-700 border border-zinc-600 text-white rounded-md px-4 py-2 w-full focus:outline-none focus:border-zinc-500"
+              className="bg-surface-2 border border-border-strong text-white rounded-md px-4 py-2 w-full focus:outline-none focus:border-accent"
               placeholder="Search..."
               value={query}
               onChange={e => setQuery(e.target.value)}
@@ -110,7 +110,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
             {isSearching && (
               <Loader2
                 size={18}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 animate-spin"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted animate-spin"
               />
             )}
           </div>
@@ -119,7 +119,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
               <div
                 key={result.external_id}
                 onClick={() => handleSelectMedia(result)}
-                className="flex items-center gap-3 p-2 hover:bg-zinc-700 rounded-md cursor-pointer"
+                className="flex items-center gap-3 p-2 hover:bg-surface-2 rounded-md cursor-pointer"
               >
                 <div className="w-10 h-14 overflow-hidden rounded-sm shrink-0">
                   {result.cover_url ? (
@@ -128,12 +128,12 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-zinc-600" />
+                    <div className="w-full h-full bg-surface-3" />
                   )}
                 </div>
                 <div className="text-white text-sm">
                   <p>{result.title}</p>
-                  <p className="text-zinc-400 text-xs">{result.year}</p>
+                  <p className="text-text-muted text-xs">{result.year}</p>
                 </div>
               </div>
             ))}
