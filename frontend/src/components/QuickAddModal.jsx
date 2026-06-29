@@ -1,38 +1,64 @@
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { X, EllipsisVertical, } from "lucide-react";
-import EntryModal from "./EntryModal";
+import { useState, useRef, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { X, EllipsisVertical, Loader2 } from 'lucide-react'
+import EntryModal from './EntryModal'
+import debounce from 'lodash.debounce'
 
 export default function QuickAddModal({ status, onClose, onAdded }) {
-  const { token } = useAuth();
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const [selectedMedia, setSelectedMedia] = useState(null);
-  const [isEntryModalOpen, setIsEntryModalOpen] = useState(false);
+  const { token } = useAuth()
+  const [query, setQuery] = useState('')
+  const [results, setResults] = useState([])
+  const [selectedMedia, setSelectedMedia] = useState(null)
+  const [isEntryModalOpen, setIsEntryModalOpen] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
 
-  async function handleSearch() {
+  const debouncedSearch = useRef(
+    debounce(searchQuery => {
+      handleSearch(searchQuery)
+    }, 500)
+  ).current
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel()
+    }
+  }, [debouncedSearch])
+
+  useEffect(() => {
+    if (query.trim() === '') {
+      setResults([])
+      setIsSearching(false)
+      return
+    }
+    setIsSearching(true)
+    debouncedSearch(query)
+  }, [query])
+
+  async function handleSearch(searchQuery = query) {
     try {
       const response = await fetch(
-        `http://localhost:3000/search?q=${query}&type=all`,
+        `http://localhost:3000/search?q=${searchQuery}&type=all`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
-      );
-      const data = await response.json();
-      setResults(data);
+      )
+      const data = await response.json()
+      setResults(data)
     } catch (err) {
-      console.error(err);
+      console.error(err)
+    } finally {
+      setIsSearching(false)
     }
   }
 
   async function handleConfirm(note, rating) {
     try {
-      const response = await fetch("http://localhost:3000/entries", {
-        method: "POST",
+      const response = await fetch('http://localhost:3000/entries', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
@@ -46,49 +72,54 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
           note: note,
           rating: rating,
         }),
-      });
-      const data = await response.json();
-      onAdded();
-      onClose();
+      })
+      const data = await response.json()
+      onAdded()
+      onClose()
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
   }
 
   function handleSelectMedia(media) {
-    setSelectedMedia(media);
-    setIsEntryModalOpen(true);
+    setSelectedMedia(media)
+    setIsEntryModalOpen(true)
   }
 
   return (
     <div className="fixed inset-0 backdrop-blur-xs flex items-center justify-center">
       {!isEntryModalOpen && (
-        <div className="bg-zinc-800 rounded-xl p-6 w-2xl">
+        <div className="bg-surface border border-border-strong rounded-xl p-6 w-2xl shadow-[0_34px_70px_-18px_rgba(0,0,0,0.78)]">
           <div className="flex justify-between items-center mb-4">
             <p className="text-white font-semibold">Add to '{status}'</p>
             <button
               onClick={onClose}
-              className="text-zinc-400 hover:cursor-pointer"
+              className="text-text-muted hover:cursor-pointer"
             >
               <X size={20} />
             </button>
           </div>
-          <input
-            type="text"
-            className="bg-zinc-700 border border-zinc-600 text-white rounded-md px-4 py-2 w-full focus:outline-none focus:border-zinc-500"
-            placeholder="Search..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch();
-            }}
-          />
+          <div className="relative">
+            <input
+              type="text"
+              className="bg-surface-2 border border-border-strong text-white rounded-md px-4 py-2 w-full focus:outline-none focus:border-accent"
+              placeholder="Search..."
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+            />
+            {isSearching && (
+              <Loader2
+                size={18}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted animate-spin"
+              />
+            )}
+          </div>
           <div className="mt-4 max-h-80 overflow-y-auto">
-            {results.map((result) => (
+            {results.map(result => (
               <div
                 key={result.external_id}
                 onClick={() => handleSelectMedia(result)}
-                className="flex items-center gap-3 p-2 hover:bg-zinc-700 rounded-md cursor-pointer"
+                className="flex items-center gap-3 p-2 hover:bg-surface-2 rounded-md cursor-pointer"
               >
                 <div className="w-10 h-14 overflow-hidden rounded-sm shrink-0">
                   {result.cover_url ? (
@@ -97,12 +128,12 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-zinc-600" />
+                    <div className="w-full h-full bg-surface-3" />
                   )}
                 </div>
                 <div className="text-white text-sm">
                   <p>{result.title}</p>
-                  <p className="text-zinc-400 text-xs">{result.year}</p>
+                  <p className="text-text-muted text-xs">{result.year}</p>
                 </div>
               </div>
             ))}
@@ -119,5 +150,5 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
         />
       )}
     </div>
-  );
+  )
 }

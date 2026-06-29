@@ -18,13 +18,10 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
 
   return (
     <div className="fixed inset-0 backdrop-blur-xs flex justify-center overflow-y-auto z-50 py-[25vh]">
-      {/* Modal card */}
-      <div className="bg-zinc-800 rounded-xl p-6 w-150 h-fit">
+      <div className="bg-surface border border-border-strong rounded-xl p-6 w-150 h-fit shadow-[0_34px_70px_-18px_rgba(0,0,0,0.78)]">
         {/* Header: cover + title + close button */}
-        <div className="flex justify-between items-start mb-4">
-          {/* Cover + title */}
+        <div className="flex justify-between items-start pb-4 border-b border-border">
           <div className="flex gap-3">
-            {/* Cover thumbnail + badge */}
             <div className="flex flex-col gap-2">
               <div className="w-20 h-28 overflow-hidden rounded-sm">
                 {entry.cover_url ? (
@@ -33,102 +30,102 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full bg-zinc-600" />
+                  <div className="w-full h-full bg-surface-3" />
                 )}
               </div>
               <span
-                className={`select-none rounded-md px-2 py-1 text-zinc-200 text-xs w-fit ${
+                className={`select-none rounded-md px-2 py-1 text-text-primary text-xs w-fit ${
                   entry.media_type === 'game'
                     ? 'bg-[#0070CC]'
                     : entry.media_type === 'movie'
                       ? 'bg-[#B20710]'
                       : entry.media_type === 'series'
                         ? 'bg-[#0F9D58]'
-                        : 'bg-zinc-600'
+                        : 'bg-surface-3'
                 }`}
               >
                 {entry.media_type}
               </span>
             </div>
 
-            {/* Title + year */}
             <div>
               <p className="text-white font-semibold">{entry.title}</p>
-              <p className="text-zinc-400 text-xs border border-zinc-600 rounded-md px-2 py-0.5 w-fit mt-1">
+              <p className="text-text-muted text-xs border border-border-strong rounded-md px-2 py-0.5 w-fit mt-1">
                 {entry.year}
               </p>
             </div>
           </div>
 
-          {/* Close button */}
           <button
             onClick={onClose}
-            className="text-zinc-400 hover:cursor-pointer"
+            className="text-text-muted hover:text-white hover:cursor-pointer"
           >
             <X size={20} />
           </button>
         </div>
 
-        {/* note */}
+        {/* Note */}
         {entry.note && (
-          <p className="text-zinc-300 text-sm mt-2">{entry.note}</p>
-        )}
-
-        {/* rating */}
-        {entry.rating && (
-          <div className="flex items-center gap-1 mt-2">
-            {[1, 2, 3, 4, 5].map(star => {
-              const filled = entry.rating >= star
-
-              const half = entry.rating >= star - 0.5 && entry.rating < star
-
-              return (
-                <div key={star} className="relative w-4 h-4">
-                  {/* Outline star, always visible */}
-                  <Star
-                    size={16}
-                    fill="none"
-                    stroke="#FFB800"
-                    className="absolute"
-                  />
-                  {/* Filled star, clipped to hald or full width */}
-                  {(filled || half) && (
-                    <div
-                      className={`absolute overflow-hidden ${half ? 'w-1/2' : 'w-full'} h-full`}
-                    >
-                      <Star size={16} fill="#FFB800" stroke="#FFB800" />
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-            <span className="text-white text-sm ml-1">
-              {parseFloat(entry.rating) % 1 === 0
-                ? parseInt(entry.rating)
-                : entry.rating}
-              /5
-            </span>
+          <div className="py-3 border-b border-border">
+            <label className="text-text-muted text-xs uppercase tracking-wide">
+              Note
+            </label>
+            <p className="text-text-secondary text-sm mt-1">{entry.note}</p>
           </div>
         )}
+
+        {/* Rating */}
+        {entry.rating && (
+          <div className="py-3 border-b border-border">
+            <label className="text-text-muted text-xs uppercase tracking-wide">
+              Rating
+            </label>
+            <div className="flex items-center gap-1 mt-1">
+              {[1, 2, 3, 4, 5].map(star => {
+                const filled = entry.rating >= star
+                const half = entry.rating >= star - 0.5 && entry.rating < star
+                return (
+                  <div key={star} className="relative w-4 h-4">
+                    <Star
+                      size={16}
+                      fill="none"
+                      stroke="#FFB800"
+                      className="absolute"
+                    />
+                    {(filled || half) && (
+                      <div
+                        className={`absolute overflow-hidden ${half ? 'w-1/2' : 'w-full'} h-full`}
+                      >
+                        <Star size={16} fill="#FFB800" stroke="#FFB800" />
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+              <span className="text-white text-sm ml-1">
+                {parseFloat(entry.rating) % 1 === 0
+                  ? parseInt(entry.rating)
+                  : entry.rating}
+                /5
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Footer: external link + menu */}
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex justify-between items-center pt-4">
           {getExternalUrl(entry) ? (
             <a
               href={getExternalUrl(entry)}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative text-sky-500 hover:text-sky-300 text-sm rounded-md px-2 py-1 border border-sky-700 transition-colors duration-100"
+              className="group relative text-accent-soft hover:text-accent-soft text-sm rounded-md px-2 py-1 border border-border-strong transition-colors duration-100"
             >
               <span>View details</span>
-
-              {/* TOP */}
-              <span className="absolute left-0 top-0 h-px w-0 bg-sky-300 transition-all duration-50 group-hover:w-full" />
-              {/* RIGHT */}
-              <span className="absolute right-0 top-0 h-0 w-px bg-sky-300 transition-all delay-100 duration-50 group-hover:h-full" />
-              {/* BOTTOM */}
-              <span className="absolute bottom-0 right-0 h-px w-0 bg-sky-300 transition-all delay-200 duration-50 group-hover:w-full" />
-              {/* LEFT */}
-              <span className="absolute bottom-0 left-0 h-0 w-px bg-sky-300 transition-all delay-300 duration-50 group-hover:h-full" />
+              <span className="absolute left-0 top-0 h-px w-0 bg-accent-soft transition-all duration-50 group-hover:w-full" />
+              <span className="absolute right-0 top-0 h-0 w-px bg-accent-soft transition-all delay-100 duration-50 group-hover:h-full" />
+              <span className="absolute bottom-0 right-0 h-px w-0 bg-accent-soft transition-all delay-200 duration-50 group-hover:w-full" />
+              <span className="absolute bottom-0 left-0 h-0 w-px bg-accent-soft transition-all delay-300 duration-50 group-hover:h-full" />
             </a>
           ) : (
             <span />
@@ -137,7 +134,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
           <div className="relative">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-zinc-400 hover:text-white cursor-pointer border border-zinc-600 rounded-md px-1 py-1"
+              className="text-text-muted hover:text-white cursor-pointer border border-border-strong rounded-md px-1 py-1"
             >
               <EllipsisVertical size={18} />
             </button>
@@ -148,17 +145,17 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
                 clipPath: isMenuOpen ? 'inset(0 0 0 0)' : 'inset(100% 0 0 0)',
               }}
             >
-              <div className="bg-zinc-700 border border-zinc-600 rounded-md">
+              <div className="bg-surface-2 border border-border-strong rounded-md">
                 <button
                   onClick={onEdit}
-                  className="w-full text-left px-2 py-2 text-sm text-zinc-300 hover:bg-zinc-600 cursor-pointer flex items-center gap-2"
+                  className="w-full text-left px-2 py-2 text-sm text-text-secondary hover:bg-surface-3 cursor-pointer flex items-center gap-2"
                 >
                   <Pencil size={14} />
                   Edit
                 </button>
                 <button
                   onClick={onDelete}
-                  className="w-full text-left px-2 py-2 text-sm text-red-400 hover:bg-zinc-600 cursor-pointer flex items-center gap-2"
+                  className="w-full text-left px-2 py-2 text-sm text-danger hover:bg-surface-3 cursor-pointer flex items-center gap-2"
                 >
                   <Trash2 size={14} />
                   Delete

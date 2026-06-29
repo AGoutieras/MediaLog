@@ -12,8 +12,8 @@ export default function FilterBar({ statusFilter, setStatusFilter, typeFilters, 
             onClick={() => setStatusFilter(status)}
             className={`rounded-full px-4 py-1.5 text-sm cursor-pointer transition ${
               statusFilter === status
-                ? 'bg-sky-600 text-white'
-                : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                ? 'bg-accent text-white'
+                : 'bg-surface text-text-muted hover:bg-surface-2'
             }`}
           >
             {status === 'all' ? 'All' : status}
@@ -29,8 +29,8 @@ export default function FilterBar({ statusFilter, setStatusFilter, typeFilters, 
             onClick={() => toggleTypeFilter(type)}
             className={`rounded-full px-4 py-1.5 text-sm cursor-pointer transition ${
               typeFilters.includes(type)
-                ? 'bg-sky-600 text-white'
-                : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                ? 'bg-accent text-white'
+                : 'bg-surface text-text-muted hover:bg-surface-2'
             }`}
           >
             {type === 'all' ? 'All' : type === 'game' ? 'Games' : type === 'movie' ? 'Films' : 'Series'}

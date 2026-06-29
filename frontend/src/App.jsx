@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
+import ProfilePage from "./pages/ProfilePage";
 
 function PrivateLayout({ children }) {
   return (
@@ -17,7 +18,7 @@ function PrivateLayout({ children }) {
 function App() {
   return (
     <BrowserRouter>
-      <div className="bg-zinc-950 min-h-screen">
+      <div className="bg-base min-h-screen">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route
@@ -36,6 +37,16 @@ function App() {
               <ProtectedRoute>
                 <PrivateLayout>
                   <SearchPage />
+                </PrivateLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <PrivateLayout>
+                  <ProfilePage />
                 </PrivateLayout>
               </ProtectedRoute>
             }
