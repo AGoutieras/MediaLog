@@ -40,3 +40,20 @@ export default async function searchGames(query) {
   });
   return formattedResults;
 }
+
+export async function getGameById(id) {
+  const token = await getToken();
+
+  const igdbResponse = await fetch(`https://api.igdb.com/v4/games`, {
+    method: "POST",
+    headers: {
+      "Client-ID": process.env.TWITCH_CLIENT_ID,
+      Authorization: `Bearer ${token}`,
+    },
+    body: `fields platforms.name; where id = ${parseInt(id)};`
+  })
+
+  const igdbData = await igdbResponse.json();
+
+  return igdbData[0]?.platforms ?? []
+}

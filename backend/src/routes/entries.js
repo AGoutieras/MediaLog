@@ -32,9 +32,6 @@ router.post("/", async (req, res) => {
       status,
       note,
       rating,
-      watched_on,
-      watched_from,
-      watched_till,
       start_date,
       end_date,
       watched_before,
@@ -65,18 +62,15 @@ router.post("/", async (req, res) => {
 
     const insertMedia = await pool.query(
       `INSERT INTO user_media 
-        (user_id, media_id, status, note, rating, watched_on, watched_from, watched_till, start_date, end_date, watched_before, platform, completion_percentage, playtime_hours) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
-       ON CONFLICT (user_id, media_id) DO NOTHING RETURNING *`,
+        (user_id, media_id, status, note, rating, start_date, end_date, watched_before, platform, completion_percentage, playtime_hours) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
+      ON CONFLICT (user_id, media_id) DO NOTHING RETURNING *`,
       [
         req.user.id,
         mediaId,
         status,
         note,
         rating,
-        watched_on ?? null,
-        watched_from ?? null,
-        watched_till ?? null,
         start_date ?? null,
         end_date ?? null,
         watched_before ?? false,
@@ -104,9 +98,6 @@ router.put("/:id", async (req, res) => {
       status,
       rating,
       note,
-      watched_on,
-      watched_from,
-      watched_till,
       start_date,
       end_date,
       watched_before,
@@ -121,23 +112,17 @@ router.put("/:id", async (req, res) => {
         status = $1, 
         rating = $2, 
         note = $3, 
-        watched_on = $4, 
-        watched_from = $5, 
-        watched_till = $6, 
-        start_date = $7, 
-        end_date = $8, 
-        watched_before = $9, 
-        platform = $10, 
-        completion_percentage = $11,
-        playtime_hours = $12
-       WHERE user_id = $13 AND id = $14 RETURNING *`,
+        start_date = $4, 
+        end_date = $5, 
+        watched_before = $6, 
+        platform = $7, 
+        completion_percentage = $8,
+        playtime_hours = $9
+      WHERE user_id = $10 AND id = $11 RETURNING *`,
       [
         status,
         rating,
         note,
-        watched_on ?? null,
-        watched_from ?? null,
-        watched_till ?? null,
         start_date ?? null,
         end_date ?? null,
         watched_before ?? false,

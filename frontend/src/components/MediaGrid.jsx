@@ -58,6 +58,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
   }
 
   function handleEdit() {
+    console.log(selectedEntry)
     setIsEditModalOpen(true)
   }
 
@@ -76,9 +77,6 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
           platform: fields.platform,
           start_date: fields.start_date,
           end_date: fields.end_date,
-          watched_on: fields.watched_on,
-          watched_from: fields.watched_from,
-          watched_till: fields.watched_till,
           watched_before: fields.watched_before,
           completion_percentage: fields.completion_percentage,
           playtime_hours: fields.playtime_hours,
@@ -254,9 +252,6 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
           initialPlatform={selectedEntry.platform ?? ''}
           initialStartDate={selectedEntry.start_date?.slice(0, 10) ?? ''}
           initialEndDate={selectedEntry.end_date?.slice(0, 10) ?? ''}
-          initialWatchedOn={selectedEntry.watched_on?.slice(0, 10) ?? ''}
-          initialWatchedFrom={selectedEntry.watched_from?.slice(0, 10) ?? ''}
-          initialWatchedTill={selectedEntry.watched_till?.slice(0, 10) ?? ''}
           initialWatchedBefore={selectedEntry.watched_before ?? false}
           initialCompletionPercentage={selectedEntry.completion_percentage ?? null}
           initialPlaytimeHours={selectedEntry.playtime_hours ?? ''}

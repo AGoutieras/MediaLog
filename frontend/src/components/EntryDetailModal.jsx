@@ -1,18 +1,18 @@
-import { X, Star, EllipsisVertical, Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { X, Star, EllipsisVertical, Pencil, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 
 export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   function getExternalUrl(entry) {
-    if (entry.media_type === "game") {
-      return entry.slug ? `https://www.igdb.com/games/${entry.slug}` : null;
+    if (entry.media_type === 'game') {
+      return entry.slug ? `https://www.igdb.com/games/${entry.slug}` : null
     }
-    if (entry.media_type === "movie") {
-      return `https://www.themoviedb.org/movie/${entry.external_id}`;
+    if (entry.media_type === 'movie') {
+      return `https://www.themoviedb.org/movie/${entry.external_id}`
     }
-    if (entry.media_type === "series") {
-      return `https://www.themoviedb.org/tv/${entry.external_id}`;
+    if (entry.media_type === 'series') {
+      return `https://www.themoviedb.org/tv/${entry.external_id}`
     }
   }
 
@@ -35,13 +35,13 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
               </div>
               <span
                 className={`select-none rounded-md px-2 py-1 text-text-primary text-xs w-fit ${
-                  entry.media_type === "game"
-                    ? "bg-[#0070CC]"
-                    : entry.media_type === "movie"
-                      ? "bg-[#B20710]"
-                      : entry.media_type === "series"
-                        ? "bg-[#0F9D58]"
-                        : "bg-surface-3"
+                  entry.media_type === 'game'
+                    ? 'bg-[#0070CC]'
+                    : entry.media_type === 'movie'
+                      ? 'bg-[#B20710]'
+                      : entry.media_type === 'series'
+                        ? 'bg-[#0F9D58]'
+                        : 'bg-surface-3'
                 }`}
               >
                 {entry.media_type}
@@ -68,41 +68,41 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
         {entry.platform && (
           <div className="py-3 border-b border-border">
             <label className="text-text-muted text-xs uppercase tracking-wide">
-              Plateforme
+              Platform
             </label>
             <p className="text-text-secondary text-sm mt-1">{entry.platform}</p>
           </div>
         )}
 
-        {/* Start date (game) */}
-        {entry.media_type === "game" && entry.start_date && (
+        {/* Start date */}
+        {entry.start_date && (
           <div className="py-3 border-b border-border">
             <label className="text-text-muted text-xs uppercase tracking-wide">
-              Commencé le
+              {entry.media_type === 'movie' ? 'Watched on' : 'Started on'}
             </label>
             <p className="text-text-secondary text-sm mt-1">
-              {new Date(entry.start_date).toLocaleDateString("fr-FR")}
+              {new Date(entry.start_date).toLocaleDateString('fr-FR')}
             </p>
           </div>
         )}
 
-        {/* End date (game) */}
-        {entry.media_type === "game" && entry.end_date && (
+        {/* End date - not for movies */}
+        {entry.media_type !== 'movie' && entry.end_date && (
           <div className="py-3 border-b border-border">
             <label className="text-text-muted text-xs uppercase tracking-wide">
-              Terminé le
+              Finished on
             </label>
             <p className="text-text-secondary text-sm mt-1">
-              {new Date(entry.end_date).toLocaleDateString("fr-FR")}
+              {new Date(entry.end_date).toLocaleDateString('fr-FR')}
             </p>
           </div>
         )}
 
         {/* Playtime (game) */}
-        {entry.media_type === "game" && entry.playtime_hours != null && (
+        {entry.media_type === 'game' && entry.playtime_hours != null && (
           <div className="py-3 border-b border-border">
             <label className="text-text-muted text-xs uppercase tracking-wide">
-              Temps de jeu
+              Playtime
             </label>
             <p className="text-text-secondary text-sm mt-1">
               {entry.playtime_hours} h
@@ -111,49 +111,13 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
         )}
 
         {/* Completion percentage (game) */}
-        {entry.media_type === "game" && entry.completion_percentage != null && (
+        {entry.media_type === 'game' && entry.completion_percentage != null && (
           <div className="py-3 border-b border-border">
             <label className="text-text-muted text-xs uppercase tracking-wide">
-              Succès / trophées
+              Completion
             </label>
             <p className="text-text-secondary text-sm mt-1">
               {entry.completion_percentage}%
-            </p>
-          </div>
-        )}
-
-        {/* Watched on (movie) */}
-        {entry.media_type === "movie" && entry.watched_on && (
-          <div className="py-3 border-b border-border">
-            <label className="text-text-muted text-xs uppercase tracking-wide">
-              Vu le
-            </label>
-            <p className="text-text-secondary text-sm mt-1">
-              {new Date(entry.watched_on).toLocaleDateString("fr-FR")}
-            </p>
-          </div>
-        )}
-
-        {/* Watched from (series) */}
-        {entry.media_type === "series" && entry.watched_from && (
-          <div className="py-3 border-b border-border">
-            <label className="text-text-muted text-xs uppercase tracking-wide">
-              Commencé le
-            </label>
-            <p className="text-text-secondary text-sm mt-1">
-              {new Date(entry.watched_from).toLocaleDateString("fr-FR")}
-            </p>
-          </div>
-        )}
-
-        {/* Watched till (series) */}
-        {entry.media_type === "series" && entry.watched_till && (
-          <div className="py-3 border-b border-border">
-            <label className="text-text-muted text-xs uppercase tracking-wide">
-              Terminé le
-            </label>
-            <p className="text-text-secondary text-sm mt-1">
-              {new Date(entry.watched_till).toLocaleDateString("fr-FR")}
             </p>
           </div>
         )}
@@ -175,9 +139,9 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
               Rating
             </label>
             <div className="flex items-center gap-1 mt-1">
-              {[1, 2, 3, 4, 5].map((star) => {
-                const filled = entry.rating >= star;
-                const half = entry.rating >= star - 0.5 && entry.rating < star;
+              {[1, 2, 3, 4, 5].map(star => {
+                const filled = entry.rating >= star
+                const half = entry.rating >= star - 0.5 && entry.rating < star
                 return (
                   <div key={star} className="relative w-4 h-4">
                     <Star
@@ -188,13 +152,13 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
                     />
                     {(filled || half) && (
                       <div
-                        className={`absolute overflow-hidden ${half ? "w-1/2" : "w-full"} h-full`}
+                        className={`absolute overflow-hidden ${half ? 'w-1/2' : 'w-full'} h-full`}
                       >
                         <Star size={16} fill="#FFB800" stroke="#FFB800" />
                       </div>
                     )}
                   </div>
-                );
+                )
               })}
               <span className="text-white text-sm ml-1">
                 {parseFloat(entry.rating) % 1 === 0
@@ -236,7 +200,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
             <div
               className="absolute right-0 bottom-full mb-1 w-32 overflow-hidden transition-all duration-100 z-10"
               style={{
-                clipPath: isMenuOpen ? "inset(0 0 0 0)" : "inset(100% 0 0 0)",
+                clipPath: isMenuOpen ? 'inset(0 0 0 0)' : 'inset(100% 0 0 0)',
               }}
             >
               <div className="bg-surface-2 border border-border-strong rounded-md">
@@ -260,5 +224,5 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
         </div>
       </div>
     </div>
-  );
+  )
 }

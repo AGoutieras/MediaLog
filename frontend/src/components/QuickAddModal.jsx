@@ -74,9 +74,6 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
           platform: fields.platform,
           start_date: fields.start_date,
           end_date: fields.end_date,
-          watched_on: fields.watched_on,
-          watched_from: fields.watched_from,
-          watched_till: fields.watched_till,
           watched_before: fields.watched_before,
           completion_percentage: fields.completion_percentage,
           playtime_hours: fields.playtime_hours,
@@ -91,6 +88,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
   }
 
   function handleSelectMedia(media) {
+    console.log(media)
     setSelectedMedia(media)
     setIsEntryModalOpen(true)
   }
