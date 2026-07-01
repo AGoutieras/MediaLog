@@ -53,7 +53,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
     }
   }
 
-  async function handleConfirm(note, rating) {
+  async function handleConfirm(fields) {
     try {
       const response = await fetch('http://localhost:3000/entries', {
         method: 'POST',
@@ -69,8 +69,17 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
           year: selectedMedia.year,
           cover_url: selectedMedia.cover_url,
           status: status,
-          note: note,
-          rating: rating,
+          note: fields.note,
+          rating: fields.rating,
+          platform: fields.platform,
+          start_date: fields.start_date,
+          end_date: fields.end_date,
+          watched_on: fields.watched_on,
+          watched_from: fields.watched_from,
+          watched_till: fields.watched_till,
+          watched_before: fields.watched_before,
+          completion_percentage: fields.completion_percentage,
+          playtime_hours: fields.playtime_hours,
         }),
       })
       const data = await response.json()
