@@ -43,9 +43,12 @@ export default function EntryModal({
   useEffect(() => {
     if (media.media_type === 'movie' || media.media_type === 'series') {
       setLoadingProviders(true)
-      fetch(`http://localhost:3000/search/providers/${media.media_type}/${media.external_id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      fetch(
+        `http://localhost:3000/search/providers/${media.media_type}/${media.external_id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
         .then(res => res.json())
         .then(data => setProviders(data.providers ?? []))
         .catch(() => setProviders([]))
@@ -53,7 +56,7 @@ export default function EntryModal({
     } else if (media.media_type === 'game' && isEditing) {
       setLoadingProviders(true)
       fetch(`http://localhost:3000/search/game/${media.external_id}`, {
-        headers: { Authorization: `Bearer ${token}`}
+        headers: { Authorization: `Bearer ${token}` },
       })
         .then(res => res.json())
         .then(data => setProviders(data.platforms ?? []))
@@ -66,9 +69,6 @@ export default function EntryModal({
     media.media_type === 'game' && !isEditing
       ? (media.platforms ?? []).map(p => p.name)
       : providers.map(p => p.name ?? p)
-
-  console.log('platformOptions:', platformOptions)
-  console.log('platform state:', platform)
 
   function handleConfirm() {
     onAdd({
@@ -204,28 +204,40 @@ export default function EntryModal({
         {/* Start date */}
         <div className="py-3 border-b border-border flex items-center justify-between gap-4">
           <span className="text-text-secondary text-sm">
-            {media.media_type === 'movie' ? 'Watched on' : 'Started on'}
+            {selectedStatus === 'Planned'
+              ? 'Planned for'
+              : media.media_type === 'movie'
+                ? 'Watched on'
+                : media.media_type === 'series'
+                  ? 'Started watching'
+                  : 'Started on'}
           </span>
           <input
             type="date"
-            className="bg-surface-2 border border-border-strong text-white rounded-md px-3 py-2 w-56 focus:outline-none focus:border-accent"
+            className="bg-surface-2 border border-border-strong text-white rounded-md px-3 py-2 w-56 focus:outline-none focus:border-accent [&::-webkit-calendar-picker-indicator]:invert"
             value={startDate}
             onChange={e => setStartDate(e.target.value)}
           />
         </div>
 
         {/* End date */}
-        {media.media_type !== 'movie' && (
-          <div className="py-3 border-b border-border flex items-center justify-between gap-4">
-            <span className="text-text-secondary text-sm">Finished on</span>
-            <input
-              type="date"
-              className="bg-surface-2 border border-border-strong text-white rounded-md px-3 py-2 w-56 focus:outline-none focus:border-accent"
-              value={endDate}
-              onChange={e => setEndDate(e.target.value)}
-            />
-          </div>
-        )}
+        {media.media_type !== 'movie' &&
+          selectedStatus !== 'Planned' &&
+          selectedStatus !== 'In Progress' && (
+            <div className="py-3 border-b border-border flex items-center justify-between gap-4">
+              <span className="text-text-secondary text-sm">
+                {media.media_type === 'series'
+                  ? 'Finished watching'
+                  : 'Finished on'}
+              </span>
+              <input
+                type="date"
+                className="bg-surface-2 border border-border-strong text-white rounded-md px-3 py-2 w-56 focus:outline-none focus:border-accent [&::-webkit-calendar-picker-indicator]:invert"
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+              />
+            </div>
+          )}
 
         {/* Watched before - movie and series only */}
         {(media.media_type === 'movie' || media.media_type === 'series') && (
@@ -242,7 +254,7 @@ export default function EntryModal({
         )}
 
         {/* Playtime - game */}
-        {media.media_type === 'game' && (
+        {media.media_type === 'game' && selectedStatus !== 'Planned' && (
           <div className="py-3 border-b border-border flex items-center justify-between gap-4">
             <span className="text-text-secondary text-sm">Playtime</span>
             <div className="flex items-center gap-2">
@@ -260,7 +272,7 @@ export default function EntryModal({
         )}
 
         {/* Completion percentage - game */}
-        {media.media_type === 'game' && (
+        {media.media_type === 'game' && selectedStatus !== 'Planned' && (
           <div className="py-3 border-b border-border flex items-center justify-between gap-4">
             <label className="flex items-center gap-2 text-text-secondary text-sm">
               <input

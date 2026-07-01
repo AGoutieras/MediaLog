@@ -78,7 +78,11 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
         {entry.start_date && (
           <div className="py-3 border-b border-border">
             <label className="text-text-muted text-xs uppercase tracking-wide">
-              {entry.media_type === 'movie' ? 'Watched on' : 'Started on'}
+              {entry.media_type === 'movie'
+                ? 'Watched on'
+                : entry.media_type === 'series'
+                  ? 'Started watching'
+                  : 'Started on'}
             </label>
             <p className="text-text-secondary text-sm mt-1">
               {new Date(entry.start_date).toLocaleDateString('fr-FR')}
@@ -90,7 +94,9 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
         {entry.media_type !== 'movie' && entry.end_date && (
           <div className="py-3 border-b border-border">
             <label className="text-text-muted text-xs uppercase tracking-wide">
-              Finished on
+              {entry.media_type === 'series'
+                ? 'Finished watching'
+                : 'Finished on'}
             </label>
             <p className="text-text-secondary text-sm mt-1">
               {new Date(entry.end_date).toLocaleDateString('fr-FR')}
