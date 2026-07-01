@@ -20,7 +20,7 @@ export default async function searchGames(query) {
       "Client-ID": process.env.TWITCH_CLIENT_ID,
       Authorization: `Bearer ${token}`,
     },
-    body: `search "${query}"; fields name, cover.url, first_release_date, slug, platforms.name;`,
+    body: `search "${query}"; fields name, cover.url, first_release_date, slug, platforms.name, platforms.abbreviation;`,
   });
 
   const igdbData = await igdbResponse.json();
@@ -50,7 +50,7 @@ export async function getGameById(id) {
       "Client-ID": process.env.TWITCH_CLIENT_ID,
       Authorization: `Bearer ${token}`,
     },
-    body: `fields platforms.name; where id = ${parseInt(id)};`
+    body: `fields platforms.name, platforms.abbreviation; where id = ${parseInt(id)};`
   })
 
   const igdbData = await igdbResponse.json();
