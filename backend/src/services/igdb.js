@@ -20,7 +20,7 @@ export default async function searchGames(query) {
       "Client-ID": process.env.TWITCH_CLIENT_ID,
       Authorization: `Bearer ${token}`,
     },
-    body: `search "${query}"; fields name, cover.url, first_release_date, slug;`,
+    body: `search "${query}"; fields name, cover.url, first_release_date, slug, platforms.name;`,
   });
 
   const igdbData = await igdbResponse.json();
@@ -34,7 +34,8 @@ export default async function searchGames(query) {
       year: game.first_release_date
         ? new Date(game.first_release_date * 1000).getFullYear().toString()
         : null,
-      slug: game.slug
+      slug: game.slug,
+      platforms: game.platforms ?? []
     };
   });
   return formattedResults;

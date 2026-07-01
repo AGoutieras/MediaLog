@@ -35,3 +35,16 @@ export async function searchSeries(query) {
   })
   return formattedResults
 }
+
+export async function getWatchProviders(id, mediaType) {
+  const endpoint = mediaType === 'movie' ? 'movie' : 'tv'
+  const tmdbResponse = await fetch(`https://api.themoviedb.org/3/${endpoint}/${id}/watch/providers`, {
+    headers: {
+      'Authorization': `Bearer ${process.env.TMDB_API_KEY}`
+    }
+  })
+  const tmdbData = await tmdbResponse.json()
+  const providers = tmdbData.results?.FR?.flatrate ?? []
+
+  return providers.map((provider) => provider.provider_name)
+}

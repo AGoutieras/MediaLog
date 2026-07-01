@@ -1,6 +1,6 @@
 import express from 'express'
 import searchGames from '../services/igdb.js'
-import { searchMovies, searchSeries } from '../services/tmdb.js'
+import { searchMovies, searchSeries, getWatchProviders } from '../services/tmdb.js'
 
 const router = express.Router()
 
@@ -48,5 +48,25 @@ router.get('/', async (req, res) => {
     })
   }
 })
+
+router.get('/providers/:type/:id', async (req, res) => {
+  try {
+    const { type, id } = req.params
+
+    if (type !== 'movie' && type !== 'series') {
+      return res.status(400).json({
+        message: 'invalid media type'
+      })
+    }
+
+    const providers = await getWatchProviders(id, type)
+
+    return res.status(200).json({ providers })
+  } catch (err) {
+    return res.status(500).json({
+      message: 'Internal server error'
+    })
+  }
+}) 
 
 export default router
