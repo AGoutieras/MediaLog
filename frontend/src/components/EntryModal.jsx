@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { ChevronDown } from "lucide-react";
 
 export default function EntryModal({
   media,
@@ -39,6 +40,8 @@ export default function EntryModal({
     initialCompletionPercentage ?? 0,
   );
   const [playtimeHours, setPlaytimeHours] = useState(initialPlaytimeHours);
+
+  const [isPlatformOpen, setIsPlatformOpen] = useState(false);
 
   useEffect(() => {
     if (media.media_type === "movie" || media.media_type === "series") {
@@ -165,36 +168,64 @@ export default function EntryModal({
         {/* Platform */}
         <div className="py-3 border-b border-border flex items-center justify-between gap-4">
           <span className="text-text-secondary text-sm shrink-0">Platform</span>
-          <div className="flex flex-col items-end gap-2 w-56">
-            <select
-              className="bg-surface-2 border border-border-strong text-white rounded-md px-3 py-2 w-full focus:outline-none focus:border-accent"
-              value={showCustomPlatform ? "other" : platform}
-              onChange={(e) => {
-                if (e.target.value === "other") {
-                  setShowCustomPlatform(true);
-                  setPlatform("");
-                } else {
-                  setShowCustomPlatform(false);
-                  setPlatform(e.target.value);
-                }
-              }}
+          <div className="relative w-56">
+            <button
+              className="bg-surface-2 border border-border-strong text-white rounded-md px-3 py-2 w-full text-left focus:outline-none focus:border-accent disabled:opacity-50 flex items-center justify-between"
+              onClick={() =>
+                !loadingProviders && setIsPlatformOpen(!isPlatformOpen)
+              }
               disabled={loadingProviders}
             >
-              <option value="">
-                {loadingProviders ? "Loading..." : "Select..."}
-              </option>
-              {platformOptions.map((name) => (
-                <option key={name} value={name}>
-                  {name}
-                </option>
-              ))}
-              <option value="other">Other</option>
-            </select>
+              <span>
+                {loadingProviders
+                  ? "Loading..."
+                  : platform || customPlatform || "Select..."}
+              </span>
+              <ChevronDown
+                size={16}
+                className={`text-text-muted transition-transform duration-100 ${isPlatformOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            <div
+              className="absolute right-0 top-full w-full overflow-hidden transition-all duration-100 z-10"
+              style={{
+                clipPath: isPlatformOpen
+                  ? "inset(0 0 0 0)"
+                  : "inset(0 0 100% 0)",
+              }}
+            >
+              <div className="bg-surface-2 border border-border-strong rounded-b-md max-h-48 overflow-y-auto">
+                {platformOptions.map((name) => (
+                  <button
+                    key={name}
+                    onClick={() => {
+                      setPlatform(name);
+                      setShowCustomPlatform(false);
+                      setIsPlatformOpen(false);
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm text-text-secondary hover:bg-surface-3 cursor-pointer"
+                  >
+                    {name}
+                  </button>
+                ))}
+                <button
+                  onClick={() => {
+                    setShowCustomPlatform(true);
+                    setPlatform("");
+                    setIsPlatformOpen(false);
+                  }}
+                  className="w-full text-left px-3 py-2 text-sm text-text-muted hover:bg-surface-3 cursor-pointer border-t border-border"
+                >
+                  Other
+                </button>
+              </div>
+            </div>
 
             {showCustomPlatform && (
               <input
                 type="text"
-                className="bg-surface-2 border border-border-strong text-white rounded-md px-3 py-2 w-full focus:outline-none focus:border-accent"
+                className="bg-surface-2 border border-border-strong text-white rounded-md px-3 py-2 w-full focus:outline-none focus:border-accent mt-2"
                 value={customPlatform}
                 onChange={(e) => setCustomPlatform(e.target.value)}
                 placeholder="Specify..."
