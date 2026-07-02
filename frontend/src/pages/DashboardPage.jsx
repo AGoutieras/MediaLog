@@ -51,19 +51,26 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-8">
-      <StatsBar entries={entries} />
-      <FilterBar
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        typeFilters={typeFilters}
-        toggleTypeFilter={toggleTypeFilter}
-      />
-      <MediaGrid
-        entries={filteredEntries}
-        statusFilter={statusFilter}
-        refetch={fetchEntries}
-      />
+    <div className="max-w-5xl mx-auto px-8 py-8 flex flex-col gap-4">
+      {/* Stats card */}
+      <div className="bg-surface rounded-xl border border-border-strong">
+        <StatsBar entries={entries} />
+      </div>
+
+      {/* Grid card */}
+      <div className="bg-surface rounded-xl border border-border-strong p-6">
+        <FilterBar
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          typeFilters={typeFilters}
+          toggleTypeFilter={toggleTypeFilter}
+        />
+        <MediaGrid
+          entries={filteredEntries}
+          statusFilter={statusFilter}
+          refetch={fetchEntries}
+        />
+      </div>
     </div>
   );
 }
