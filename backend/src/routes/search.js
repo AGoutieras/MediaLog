@@ -1,6 +1,6 @@
 import express from 'express'
-import searchGames from '../services/igdb.js'
-import { searchMovies, searchSeries } from '../services/tmdb.js'
+import searchGames, { getGameById } from '../services/igdb.js'
+import { searchMovies, searchSeries, getWatchProviders, } from '../services/tmdb.js'
 
 const router = express.Router()
 
@@ -42,6 +42,38 @@ router.get('/', async (req, res) => {
         message: 'invalid media type'
       })
     }
+  } catch (err) {
+    return res.status(500).json({
+      message: 'Internal server error'
+    })
+  }
+})
+
+router.get('/providers/:type/:id', async (req, res) => {
+  try {
+    const { type, id } = req.params
+
+    if (type !== 'movie' && type !== 'series') {
+      return res.status(400).json({
+        message: 'invalid media type'
+      })
+    }
+
+    const providers = await getWatchProviders(id, type)
+
+    return res.status(200).json({ providers })
+  } catch (err) {
+    return res.status(500).json({
+      message: 'Internal server error'
+    })
+  }
+})
+
+router.get('/game/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const platforms = await getGameById(id)
+    return res.status(200).json({ platforms })
   } catch (err) {
     return res.status(500).json({
       message: 'Internal server error'

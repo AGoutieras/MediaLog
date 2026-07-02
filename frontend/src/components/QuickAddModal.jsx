@@ -53,7 +53,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
     }
   }
 
-  async function handleConfirm(note, rating) {
+  async function handleConfirm(fields) {
     try {
       const response = await fetch('http://localhost:3000/entries', {
         method: 'POST',
@@ -69,8 +69,14 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
           year: selectedMedia.year,
           cover_url: selectedMedia.cover_url,
           status: status,
-          note: note,
-          rating: rating,
+          note: fields.note,
+          rating: fields.rating,
+          platform: fields.platform,
+          start_date: fields.start_date,
+          end_date: fields.end_date,
+          watched_before: fields.watched_before,
+          completion_percentage: fields.completion_percentage,
+          playtime_hours: fields.playtime_hours,
         }),
       })
       const data = await response.json()
@@ -131,9 +137,40 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
                     <div className="w-full h-full bg-surface-3" />
                   )}
                 </div>
-                <div className="text-white text-sm">
-                  <p>{result.title}</p>
-                  <p className="text-text-muted text-xs">{result.year}</p>
+                <div className="flex-1 flex items-center justify-between">
+                  <div className="text-white text-sm">
+                    <p>{result.title}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-text-muted text-xs">{result.year}</p>
+                      {result.media_type === 'game' &&
+                        result.platforms?.length > 0 && (
+                          <>
+                            <span className="text-text-faint text-xs">·</span>
+                            {result.platforms.map(p => (
+                              <span
+                                key={p.id}
+                                className="text-text-muted text-xs bg-surface-3 rounded-2xl px-1.5 py-0.5"
+                              >
+                                {p.abbreviation ?? p.name}
+                              </span>
+                            ))}
+                          </>
+                        )}
+                    </div>
+                  </div>
+                  <span
+                    className={`select-none rounded-md px-2 py-1 text-text-primary text-xs w-fit ${
+                      result.media_type === 'game'
+                        ? 'bg-[#0070CC]'
+                        : result.media_type === 'movie'
+                          ? 'bg-[#B20710]'
+                          : result.media_type === 'series'
+                            ? 'bg-[#0F9D58]'
+                            : 'bg-surface-3'
+                    }`}
+                  >
+                    {result.media_type}
+                  </span>
                 </div>
               </div>
             ))}
