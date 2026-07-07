@@ -8,7 +8,7 @@ export default function StatsBar({ entries }) {
   const inProgress = entries.filter(e => e.status === 'In Progress').length
   const done = entries.filter(e => e.status === 'Done').length
   return (
-    <div className="flex items-center justify-between px-8 py-6 border-b border-border">
+    <div className="flex items-center justify-between px-8 py-6">
       <div className="flex items-center gap-4">
         <Avatar username={user.username} size="w-14 h-14" textSize="text-2xl" />
         <p className="text-white font-semibold ">{user.username}</p>

@@ -1,14 +1,14 @@
-import { Star, SquarePen } from 'lucide-react'
+import { Star, SquarePen } from "lucide-react";
 
 export default function MediaTile({ entry }) {
   const borderColor =
-    entry.media_type === 'game'
-      ? 'border-[#0070CC]'
-      : entry.media_type === 'movie'
-        ? 'border-[#B20710]'
-        : entry.media_type === 'series'
-          ? 'border-[#0F9D58]'
-          : 'border-border-strong'
+    entry.media_type === "game"
+      ? "border-[#0070CC]"
+      : entry.media_type === "movie"
+        ? "border-[#B20710]"
+        : entry.media_type === "series"
+          ? "border-[#0F9D58]"
+          : "border-border-strong";
 
   return (
     <div
@@ -22,8 +22,10 @@ export default function MediaTile({ entry }) {
           className="w-full h-full object-cover transition-transform duration-100 group-hover:scale-110"
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center text-white text-[10px] text-center px-2">
-          {entry.title}
+        <div className="w-full h-full flex items-center justify-center px-3">
+          <p className="text-white text-xs text-center font-medium leading-tight line-clamp-4">
+            {entry.title}
+          </p>
         </div>
       )}
 
@@ -42,13 +44,13 @@ export default function MediaTile({ entry }) {
       {/* Badge Type */}
       <span
         className={`absolute top-0 left-0 rounded-br-md px-2 py-0.5 text-xs text-white flex items-center justify-center ${
-          entry.media_type === 'game'
-            ? 'bg-[#0070CC]'
-            : entry.media_type === 'movie'
-              ? 'bg-[#B20710]'
-              : entry.media_type === 'series'
-                ? 'bg-[#0F9D58]'
-                : 'bg-border-strong'
+          entry.media_type === "game"
+            ? "bg-[#0070CC]"
+            : entry.media_type === "movie"
+              ? "bg-[#B20710]"
+              : entry.media_type === "series"
+                ? "bg-[#0F9D58]"
+                : "bg-border-strong"
         }`}
       >
         {entry.media_type}
@@ -65,5 +67,5 @@ export default function MediaTile({ entry }) {
         </span>
       )}
     </div>
-  )
+  );
 }

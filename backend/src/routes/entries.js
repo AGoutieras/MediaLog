@@ -146,4 +146,23 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const result = await pool.query(
+      "DELETE FROM user_media WHERE user_id = $1 AND id = $2 RETURNING *",
+      [req.user.id, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Entry not found" });
+    }
+
+    return res.status(204).send();
+  } catch (err) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;

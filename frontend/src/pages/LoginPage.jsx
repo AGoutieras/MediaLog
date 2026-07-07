@@ -71,7 +71,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="bg-base min-h-screen flex justify-center pt-32">
+    <div className="min-h-screen flex justify-center pt-32">
       {/* Auth card */}
       <div className="bg-surface border border-border-strong rounded-xl p-20 w-150 h-fit text-white shadow-[0_34px_70px_-18px_rgba(0,0,0,0.78)]">
         {/* App title */}
