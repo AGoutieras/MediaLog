@@ -58,10 +58,11 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
   }
 
   function handleEdit() {
+    console.log(selectedEntry)
     setIsEditModalOpen(true)
   }
 
-  async function handleUpdateEntry(note, rating) {
+  async function handleUpdateEntry(fields) {
     try {
       await fetch(`http://localhost:3000/entries/${selectedEntry.id}`, {
         method: 'PUT',
@@ -69,7 +70,17 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ status: selectedEntry.status, note, rating }),
+        body: JSON.stringify({
+          status: selectedEntry.status,
+          note: fields.note,
+          rating: fields.rating,
+          platform: fields.platform,
+          start_date: fields.start_date,
+          end_date: fields.end_date,
+          watched_before: fields.watched_before,
+          completion_percentage: fields.completion_percentage,
+          playtime_hours: fields.playtime_hours,
+        }),
       })
       refetch()
       setIsEditModalOpen(false)
@@ -236,8 +247,14 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
             setSelectedEntry(null)
           }}
           onAdd={handleUpdateEntry}
-          initialNote={selectedEntry.note}
-          initialRating={selectedEntry.rating}
+          initialNote={selectedEntry.note ?? ''}
+          initialRating={selectedEntry.rating ?? null}
+          initialPlatform={selectedEntry.platform ?? ''}
+          initialStartDate={selectedEntry.start_date?.slice(0, 10) ?? ''}
+          initialEndDate={selectedEntry.end_date?.slice(0, 10) ?? ''}
+          initialWatchedBefore={selectedEntry.watched_before ?? false}
+          initialCompletionPercentage={selectedEntry.completion_percentage ?? null}
+          initialPlaytimeHours={selectedEntry.playtime_hours ?? ''}
           isEditing={true}
         />
       )}

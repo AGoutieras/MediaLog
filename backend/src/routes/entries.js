@@ -3,20 +3,22 @@ import { pool } from "../db/index.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT user_media.*, medias.title, medias.year, medias.cover_url, medias.external_id, medias.slug, media_types.name AS media_type FROM user_media JOIN medias ON user_media.media_id = medias.id JOIN media_types ON medias.media_type_id = media_types.id WHERE user_media.user_id = $1",
-      [req.user.id],
-    );
-
-    return res.status(200).json(result.rows);
+      `SELECT user_media.*, medias.external_id, medias.slug, medias.title, medias.year, medias.cover_url, media_types.name AS media_type
+       FROM user_media
+       JOIN medias ON user_media.media_id = medias.id
+       JOIN media_types ON medias.media_type_id = media_types.id
+       WHERE user_media.user_id = $1
+       ORDER BY user_media.created_at DESC`,
+      [req.user.id]
+    )
+    return res.status(200).json(result.rows)
   } catch (err) {
-    return res.status(500).json({
-      message: "Internal server error",
-    });
+    return res.status(500).json({ message: 'Internal server error' })
   }
-});
+})
 
 router.post("/", async (req, res) => {
   try {
@@ -30,6 +32,12 @@ router.post("/", async (req, res) => {
       status,
       note,
       rating,
+      start_date,
+      end_date,
+      watched_before,
+      platform,
+      completion_percentage,
+      playtime_hours
     } = req.body;
 
     const result = await pool.query(
@@ -53,8 +61,23 @@ router.post("/", async (req, res) => {
     const mediaId = mediaEntry.rows[0].id
 
     const insertMedia = await pool.query(
-      "INSERT INTO user_media (user_id, media_id, status, note, rating) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (user_id, media_id) DO NOTHING RETURNING *",
-      [req.user.id, mediaId, status, note, rating],
+      `INSERT INTO user_media 
+        (user_id, media_id, status, note, rating, start_date, end_date, watched_before, platform, completion_percentage, playtime_hours) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
+      ON CONFLICT (user_id, media_id) DO NOTHING RETURNING *`,
+      [
+        req.user.id,
+        mediaId,
+        status,
+        note,
+        rating,
+        start_date ?? null,
+        end_date ?? null,
+        watched_before ?? false,
+        platform ?? null,
+        completion_percentage ?? null,
+        playtime_hours ?? null
+      ],
     );
 
     if (insertMedia.rows.length === 0) {
@@ -71,12 +94,44 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    const { status, rating, note } = req.body;
+    const {
+      status,
+      rating,
+      note,
+      start_date,
+      end_date,
+      watched_before,
+      platform,
+      completion_percentage,
+      playtime_hours,
+    } = req.body;
     const id = req.params.id;
 
     const updatedEntry = await pool.query(
-      "UPDATE user_media SET status = $1, rating = $2, note = $3 WHERE user_id = $4 AND id = $5 RETURNING *",
-      [status, rating, note, req.user.id, id],
+      `UPDATE user_media SET 
+        status = $1, 
+        rating = $2, 
+        note = $3, 
+        start_date = $4, 
+        end_date = $5, 
+        watched_before = $6, 
+        platform = $7, 
+        completion_percentage = $8,
+        playtime_hours = $9
+      WHERE user_id = $10 AND id = $11 RETURNING *`,
+      [
+        status,
+        rating,
+        note,
+        start_date ?? null,
+        end_date ?? null,
+        watched_before ?? false,
+        platform ?? null,
+        completion_percentage ?? null,
+        playtime_hours ?? null,
+        req.user.id,
+        id,
+      ],
     );
 
     if (updatedEntry.rows.length === 0) {
@@ -95,20 +150,18 @@ router.delete("/:id", async (req, res) => {
   try {
     const id = req.params.id;
 
-    const deleteEntry = await pool.query(
-      "DELETE FROM user_media WHERE id = $1 AND user_id = $2 RETURNING *",
-      [id, req.user.id],
+    const result = await pool.query(
+      "DELETE FROM user_media WHERE user_id = $1 AND id = $2 RETURNING *",
+      [req.user.id, id]
     );
 
-    if (deleteEntry.rows.length === 0) {
-      return res.status(404).json({ message: "entry not found" });
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Entry not found" });
     }
 
-    return res.status(204).json({});
+    return res.status(204).send();
   } catch (err) {
-    return res.status(500).json({
-      message: "Internal server error",
-    });
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 

@@ -1,38 +1,39 @@
-import { useState, useRef, useEffect } from 'react'
-import { useAuth } from '../context/AuthContext'
-import { X, EllipsisVertical, Loader2 } from 'lucide-react'
-import EntryModal from './EntryModal'
-import debounce from 'lodash.debounce'
+import { useState, useRef, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { X, Loader2, Check } from "lucide-react";
+import EntryModal from "./EntryModal";
+import debounce from "lodash.debounce";
 
 export default function QuickAddModal({ status, onClose, onAdded }) {
-  const { token } = useAuth()
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
-  const [selectedMedia, setSelectedMedia] = useState(null)
-  const [isEntryModalOpen, setIsEntryModalOpen] = useState(false)
-  const [isSearching, setIsSearching] = useState(false)
+  const { token } = useAuth();
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [isEntryModalOpen, setIsEntryModalOpen] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [addedEntries, setAddedEntries] = useState({});
 
   const debouncedSearch = useRef(
-    debounce(searchQuery => {
-      handleSearch(searchQuery)
-    }, 500)
-  ).current
+    debounce((searchQuery) => {
+      handleSearch(searchQuery);
+    }, 500),
+  ).current;
 
   useEffect(() => {
     return () => {
-      debouncedSearch.cancel()
-    }
-  }, [debouncedSearch])
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
   useEffect(() => {
-    if (query.trim() === '') {
-      setResults([])
-      setIsSearching(false)
-      return
+    if (query.trim() === "") {
+      setResults([]);
+      setIsSearching(false);
+      return;
     }
-    setIsSearching(true)
-    debouncedSearch(query)
-  }, [query])
+    setIsSearching(true);
+    debouncedSearch(query);
+  }, [query]);
 
   async function handleSearch(searchQuery = query) {
     try {
@@ -42,23 +43,23 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      )
-      const data = await response.json()
-      setResults(data)
+        },
+      );
+      const data = await response.json();
+      setResults(data);
     } catch (err) {
-      console.error(err)
+      console.error(err);
     } finally {
-      setIsSearching(false)
+      setIsSearching(false);
     }
   }
 
-  async function handleConfirm(note, rating) {
+  async function handleConfirm(fields) {
     try {
-      const response = await fetch('http://localhost:3000/entries', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/entries", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
@@ -69,22 +70,43 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
           year: selectedMedia.year,
           cover_url: selectedMedia.cover_url,
           status: status,
-          note: note,
-          rating: rating,
+          note: fields.note,
+          rating: fields.rating,
+          platform: fields.platform,
+          start_date: fields.start_date,
+          end_date: fields.end_date,
+          watched_before: fields.watched_before,
+          completion_percentage: fields.completion_percentage,
+          playtime_hours: fields.playtime_hours,
         }),
-      })
-      const data = await response.json()
-      onAdded()
-      onClose()
+      });
+      const data = await response.json();
+      onAdded();
+      onClose();
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
   }
 
   function handleSelectMedia(media) {
-    setSelectedMedia(media)
-    setIsEntryModalOpen(true)
+    setSelectedMedia(media);
+    setIsEntryModalOpen(true);
   }
+
+  useEffect(() => {
+    fetch("http://localhost:3000/entries", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const map = {};
+        data.forEach((e) => {
+          map[String(e.external_id)] = e.status;
+        });
+        setAddedEntries(map);
+      })
+      .catch(() => {});
+  }, [token]);
 
   return (
     <div className="fixed inset-0 backdrop-blur-xs flex items-center justify-center">
@@ -105,7 +127,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
               className="bg-surface-2 border border-border-strong text-white rounded-md px-4 py-2 w-full focus:outline-none focus:border-accent"
               placeholder="Search..."
               value={query}
-              onChange={e => setQuery(e.target.value)}
+              onChange={(e) => setQuery(e.target.value)}
             />
             {isSearching && (
               <Loader2
@@ -115,11 +137,15 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
             )}
           </div>
           <div className="mt-4 max-h-80 overflow-y-auto">
-            {results.map(result => (
+            {results.map((result) => (
               <div
                 key={result.external_id}
                 onClick={() => handleSelectMedia(result)}
-                className="flex items-center gap-3 p-2 hover:bg-surface-2 rounded-md cursor-pointer"
+                className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors ${
+                  addedEntries[String(result.external_id)]
+                    ? "bg-surface-2 hover:bg-surface-3"
+                    : "hover:bg-surface-2"
+                }`}
               >
                 <div className="w-10 h-14 overflow-hidden rounded-sm shrink-0">
                   {result.cover_url ? (
@@ -131,9 +157,54 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
                     <div className="w-full h-full bg-surface-3" />
                   )}
                 </div>
-                <div className="text-white text-sm">
-                  <p>{result.title}</p>
-                  <p className="text-text-muted text-xs">{result.year}</p>
+                <div className="flex-1 flex items-center justify-between">
+                  <div className="text-white text-sm">
+                    <p>{result.title}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-text-muted text-xs">{result.year}</p>
+                      {result.media_type === "game" &&
+                        result.platforms?.length > 0 && (
+                          <>
+                            <span className="text-text-faint text-xs">·</span>
+                            {result.platforms.map((p) => (
+                              <span
+                                key={p.id}
+                                className="text-text-muted text-xs bg-surface-3 rounded-2xl px-1.5 py-0.5"
+                              >
+                                {p.abbreviation ?? p.name}
+                              </span>
+                            ))}
+                          </>
+                        )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {addedEntries[String(result.external_id)] && (
+                      <div className="relative group/tooltip">
+                        <Check
+                          size={16}
+                          className="text-accent-soft shrink-0"
+                        />
+                        <div className="absolute right-0 bottom-full mb-1 w-max px-2 py-1 bg-surface-3 border border-border-strong text-text-secondary text-xs rounded-md opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-100 pointer-events-none">
+                          Already in '{addedEntries[String(result.external_id)]}
+                          '
+                        </div>
+                      </div>
+                    )}
+                    <span
+                      className={`select-none rounded-md px-2 py-1 text-text-primary text-xs w-fit ${
+                        result.media_type === "game"
+                          ? "bg-[#0070CC]"
+                          : result.media_type === "movie"
+                            ? "bg-[#B20710]"
+                            : result.media_type === "series"
+                              ? "bg-[#0F9D58]"
+                              : "bg-surface-3"
+                      }`}
+                    >
+                      {result.media_type}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -150,5 +221,5 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
         />
       )}
     </div>
-  )
+  );
 }

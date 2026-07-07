@@ -71,7 +71,7 @@ export default function SearchPage() {
     setIsModalOpen(false)
   }
 
-  async function handleConfirm(note, rating) {
+  async function handleConfirm(fields) {
     try {
       const response = await fetch('http://localhost:3000/entries', {
         method: 'POST',
@@ -87,8 +87,14 @@ export default function SearchPage() {
           year: selectedMedia.year,
           cover_url: selectedMedia.cover_url,
           status: selectedStatus,
-          note: note,
-          rating: rating,
+          note: fields.note,
+          rating: fields.rating,
+          platform: fields.platform,
+          start_date: fields.start_date,
+          end_date: fields.end_date,
+          watched_before: fields.watched_before,
+          completion_percentage: fields.completion_percentage,
+          playtime_hours: fields.playtime_hours,
         }),
       })
       const data = await response.json()

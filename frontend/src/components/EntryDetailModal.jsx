@@ -64,6 +64,70 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
           </button>
         </div>
 
+        {/* Platform */}
+        {entry.platform && (
+          <div className="py-3 border-b border-border">
+            <label className="text-text-muted text-xs uppercase tracking-wide">
+              Platform
+            </label>
+            <p className="text-text-secondary text-sm mt-1">{entry.platform}</p>
+          </div>
+        )}
+
+        {/* Start date */}
+        {entry.start_date && (
+          <div className="py-3 border-b border-border">
+            <label className="text-text-muted text-xs uppercase tracking-wide">
+              {entry.media_type === 'movie'
+                ? 'Watched on'
+                : entry.media_type === 'series'
+                  ? 'Started watching'
+                  : 'Started on'}
+            </label>
+            <p className="text-text-secondary text-sm mt-1">
+              {new Date(entry.start_date).toLocaleDateString('fr-FR')}
+            </p>
+          </div>
+        )}
+
+        {/* End date - not for movies */}
+        {entry.media_type !== 'movie' && entry.end_date && (
+          <div className="py-3 border-b border-border">
+            <label className="text-text-muted text-xs uppercase tracking-wide">
+              {entry.media_type === 'series'
+                ? 'Finished watching'
+                : 'Finished on'}
+            </label>
+            <p className="text-text-secondary text-sm mt-1">
+              {new Date(entry.end_date).toLocaleDateString('fr-FR')}
+            </p>
+          </div>
+        )}
+
+        {/* Playtime (game) */}
+        {entry.media_type === 'game' && entry.playtime_hours != null && (
+          <div className="py-3 border-b border-border">
+            <label className="text-text-muted text-xs uppercase tracking-wide">
+              Playtime
+            </label>
+            <p className="text-text-secondary text-sm mt-1">
+              {entry.playtime_hours} h
+            </p>
+          </div>
+        )}
+
+        {/* Completion percentage (game) */}
+        {entry.media_type === 'game' && entry.completion_percentage != null && (
+          <div className="py-3 border-b border-border">
+            <label className="text-text-muted text-xs uppercase tracking-wide">
+              Completion
+            </label>
+            <p className="text-text-secondary text-sm mt-1">
+              {entry.completion_percentage}%
+            </p>
+          </div>
+        )}
+
         {/* Note */}
         {entry.note && (
           <div className="py-3 border-b border-border">
