@@ -16,6 +16,7 @@ MediaLog lets users maintain a unified list of the media they are playing, watch
 - [Getting started](#getting-started)
 - [Running tests](#running-tests)
 - [Repository structure](#repository-structure)
+- [Development Journal](#development-journal)
 
 ---
 
