@@ -4,6 +4,18 @@ import { X, Loader2, Check } from "lucide-react";
 import EntryModal from "./EntryModal";
 import debounce from "lodash.debounce";
 
+/**
+ * QuickAddModal Component
+ * Dashboard shortcut for adding entries without navigating to the search page.
+ * Opened by clicking the + button next to a status section header in MediaGrid.
+ *
+ * Features:
+ * - Debounced search (500ms) across all media types simultaneously
+ * - Already-added detection: fetches current entries on mount and highlights
+ *   results already in the user's list with a checkmark and tooltip
+ * - Platform abbreviation pills for game results (from IGDB)
+ * - Opens EntryModal when a result is selected to fill in entry details
+ */
 export default function QuickAddModal({ status, onClose, onAdded }) {
   const { token } = useAuth();
   const [query, setQuery] = useState("");
@@ -11,20 +23,26 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [isEntryModalOpen, setIsEntryModalOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  // addedEntries maps external_id (string) -> status for already-added detection
   const [addedEntries, setAddedEntries] = useState({});
 
+  // useRef persists the debounced function across renders without recreating it
+  // Creating it inside the component body would reset the timer on every keystroke
   const debouncedSearch = useRef(
     debounce((searchQuery) => {
       handleSearch(searchQuery);
     }, 500),
   ).current;
 
+  // Cancel any pending debounce call when the component unmounts
   useEffect(() => {
     return () => {
       debouncedSearch.cancel();
     };
   }, [debouncedSearch]);
 
+  // Trigger debounced search on every query change
+  // Empty query clears results immediately without waiting for the debounce
   useEffect(() => {
     if (query.trim() === "") {
       setResults([]);
@@ -81,6 +99,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
         }),
       });
       const data = await response.json();
+      // Notify the parent to refetch entries, then close both modals
       onAdded();
       onClose();
     } catch (err) {
@@ -93,6 +112,9 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
     setIsEntryModalOpen(true);
   }
 
+  // Fetch current entries on mount to build the already-added map
+  // external_id is coerced to string since IGDB returns numeric IDs
+  // but they are stored as strings in the DB
   useEffect(() => {
     fetch("http://localhost:3000/entries", {
       headers: { Authorization: `Bearer ${token}` },
@@ -110,6 +132,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
 
   return (
     <div className="fixed inset-0 backdrop-blur-xs flex items-center justify-center">
+      {/* Search panel - hidden when EntryModal is open to avoid stacking modals */}
       {!isEntryModalOpen && (
         <div className="bg-surface border border-border-strong rounded-xl p-6 w-2xl shadow-[0_34px_70px_-18px_rgba(0,0,0,0.78)]">
           <div className="flex justify-between items-center mb-4">
@@ -141,6 +164,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
               <div
                 key={result.external_id}
                 onClick={() => handleSelectMedia(result)}
+                // Already-added entries get an elevated background to distinguish them
                 className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors ${
                   addedEntries[String(result.external_id)]
                     ? "bg-surface-2 hover:bg-surface-3"
@@ -162,6 +186,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
                     <p>{result.title}</p>
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="text-text-muted text-xs">{result.year}</p>
+                      {/* Platform abbreviation pills, games only, sourced from IGDB */}
                       {result.media_type === "game" &&
                         result.platforms?.length > 0 && (
                           <>
@@ -171,6 +196,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
                                 key={p.id}
                                 className="text-text-muted text-xs bg-surface-3 rounded-2xl px-1.5 py-0.5"
                               >
+                                {/* Use abbreviation if available (e.g. "PS5"), fallback to full name */}
                                 {p.abbreviation ?? p.name}
                               </span>
                             ))}
@@ -179,6 +205,8 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
+                    {/* Checkmark with tooltip for already-added entries
+                        group/tooltip scopes hover state to this element only */}
                     {addedEntries[String(result.external_id)] && (
                       <div className="relative group/tooltip">
                         <Check
@@ -191,6 +219,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
                         </div>
                       </div>
                     )}
+                    {/* Media type badge */}
                     <span
                       className={`select-none rounded-md px-2 py-1 text-text-primary text-xs w-fit ${
                         result.media_type === "game"

@@ -4,6 +4,15 @@ import StatsBar from "../components/StatsBar";
 import MediaGrid from "../components/MediaGrid";
 import FilterBar from "../components/FilterBar";
 
+/**
+ * DashboardPage
+ * Main page of the application. Fetches all user entries on mount and manages
+ * the two filter axes (status and media type) at the top level.
+ *
+ * Filtering is done client-side on the full entries array, no separate API call
+ * per filter change. fetchEntries is passed to MediaGrid as refetch so child
+ * components can trigger a data refresh after add, edit, or delete.
+ */
 export default function DashboardPage() {
   const { token } = useAuth();
   const [entries, setEntries] = useState([]);
@@ -22,6 +31,7 @@ export default function DashboardPage() {
     fetchEntries();
   }, []);
 
+  // Both filters are applied simultaneously, entries must match both status and type
   const filteredEntries = entries.filter((entry) => {
     const matchStatus = statusFilter === "all" || entry.status === statusFilter;
     const matchType =
@@ -30,11 +40,13 @@ export default function DashboardPage() {
   });
 
   function toggleTypeFilter(type) {
+    // Selecting "All" resets the type filter
     if (type === "all") {
       setTypeFilters(["all"]);
       return;
     }
 
+    // Start from an empty array if "All" was previously selected
     let updated = typeFilters.includes("all") ? [] : [...typeFilters];
 
     if (updated.includes(type)) {
@@ -43,6 +55,7 @@ export default function DashboardPage() {
       updated.push(type);
     }
 
+    // If no type or all 3 types are selected, collapse back to "All"
     if (updated.length === 0 || updated.length === 3) {
       updated = ["all"];
     }

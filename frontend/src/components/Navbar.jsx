@@ -4,6 +4,11 @@ import { House, Search, LogOut, UserPen } from "lucide-react";
 import { useState, useEffect } from "react";
 import Avatar from "./Avatar";
 
+/**
+ * Navbar Component
+ * Sticky top navigation bar with active route highlighting, avatar dropdown,
+ * and logout. Only rendered when the user is authenticated (returns null otherwise).
+ */
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -11,6 +16,7 @@ export default function Navbar() {
 
   useEffect(() => {
     if (isDropdownOpen) {
+      // Close the dropdown on any click outside, same pattern as MediaCard
       function handleClickOutside() {
         setIsDropdownOpen(false);
       }
@@ -23,6 +29,7 @@ export default function Navbar() {
     }
   }, [isDropdownOpen]);
 
+  // Don't render the navbar on unauthenticated pages (/login)
   if (!user) return null;
 
   return (
@@ -32,7 +39,7 @@ export default function Navbar() {
         <p className="font-bold text-white text-lg select-none">MediaLog</p>
       </div>
 
-      {/* Tabs */}
+      {/* NavLink applies active styles automatically based on the current route */}
       <div className="flex transition gap-8 ">
         <NavLink
           to="/dashboard"
@@ -58,7 +65,8 @@ export default function Navbar() {
         </NavLink>
       </div>
 
-      {/* Avatar */}
+      {/* Avatar - clicking opens the dropdown, stopPropagation prevents
+          the document listener from immediately closing it */}
       <div
         className="relative cursor-pointer select-none transition-transform duration-100 hover:scale-110 will-change-transform"
         onClick={(e) => {
@@ -68,7 +76,7 @@ export default function Navbar() {
       >
         <Avatar username={user.username} />
       </div>
-      {/* Dropdown */}
+      {/* Dropdown - clipPath sliding animation from top to bottom*/}
       <div
         className="absolute right-8 top-full w-40 overflow-hidden transition-all duration-100"
         style={{
