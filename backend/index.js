@@ -16,8 +16,11 @@ app.use(cors())
 
 app.use(express.json())
 
+// Public routes, no authentication required
 app.use('/auth', authRouter)
 
+// authMiddleware is applied globally here so all routes declared after
+// this line require a valid JWT, /entries and /search are both protected
 app.use(authMiddleware)
 
 app.use('/entries', entriesRouter)

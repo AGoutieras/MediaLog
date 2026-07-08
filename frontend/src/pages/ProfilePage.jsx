@@ -2,6 +2,19 @@ import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Check, X, SquarePen } from 'lucide-react'
 
+/**
+ * ProfilePage
+ * Inline edit interface for username, email, and password.
+ * Only one field can be in edit mode at a time (controlled by editingField state).
+ * Clicking the pencil icon switches that field to edit mode; the others stay read-only.
+ *
+ * On successful save, the backend returns a fresh JWT (since username and email
+ * are encoded in the payload). login() is called with the new token to update
+ * auth state without requiring a logout/login cycle.
+ *
+ * Input state is reset when opening a field to avoid stale values from
+ * a previous edit session appearing in the input.
+ */
 export default function ProfilePage() {
   const { user, login, token } = useAuth()
   const [editingField, setEditingField] = useState(null)
@@ -10,6 +23,7 @@ export default function ProfilePage() {
   const [passwordInput, setPasswordInput] = useState('')
   const [currentPasswordInput, setCurrentPasswordInput] = useState('')
   const [confirmPasswordInput, setConfirmPasswordInput] = useState('')
+  // errors is an object keyed by field name for per-field error display
   const [errors, setErrors] = useState({})
 
   async function handleSaveUsername() {
@@ -25,6 +39,7 @@ export default function ProfilePage() {
 
       if (!response.ok) {
         const data = await response.json()
+        // Refresh the JWT and user state with the updated username
         setErrors({ username: data.message })
         return
       }
@@ -65,6 +80,7 @@ export default function ProfilePage() {
   }
 
   async function handleSavePassword() {
+    // Client-side check before hitting the API
     if (passwordInput !== confirmPasswordInput) {
       setErrors({ confirmPassword: 'Passwords do not match' })
       console.error('Passwords do not match')
@@ -86,6 +102,7 @@ export default function ProfilePage() {
 
       if (!response.ok) {
         const data = await response.json()
+        // Map the "incorrect current password" error to its specific field
         if (data.message === 'Current password is incorrect') {
           setErrors({ currentPassword: data.message })
         } else {
@@ -98,6 +115,7 @@ export default function ProfilePage() {
       const data = await response.json()
       login(data.token, data.user)
       setEditingField(null)
+      // Clear all password inputs after a successful change
       setCurrentPasswordInput('')
       setPasswordInput('')
       setConfirmPasswordInput('')
@@ -149,6 +167,7 @@ export default function ProfilePage() {
                 <span className="text-white">{user.username}</span>
                 <button
                   onClick={() => {
+                    // Reset input state before entering edit mode to avoid stale values
                     setUsernameInput('')
                     setEditingField('username')
                   }}
@@ -216,7 +235,7 @@ export default function ProfilePage() {
           )}
         </div>
 
-        {/* Password */}
+        {/* Password - Requires current password verification before updating*/}
         <div className="py-3 border-b border-border">
           <label className="text-text-muted text-xs uppercase tracking-wide">
             Password
@@ -277,6 +296,7 @@ export default function ProfilePage() {
                 <span className="text-white">••••••••</span>
                 <button
                   onClick={() => {
+                    // Reset all password inputs before entering edit mode
                     setCurrentPasswordInput('')
                     setPasswordInput('')
                     setConfirmPasswordInput('')

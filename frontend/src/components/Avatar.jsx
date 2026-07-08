@@ -1,7 +1,14 @@
+/**
+ * Avatar Component
+ * Displays a colored circle with the user's initials.
+ * Color and initials are derived deterministically from the username
+ * so the same user always gets the same avatar without storing any image.
+ */
+
 export default function Avatar({
   username,
-  size = "w-9 h-9",
-  textSize = "text-sm",
+  size = "w-9 h-9", // Tailwind width/height classes, configurable for different contexts
+  textSize = "text-sm", // Tailwind text size class
 }) {
   const colors = [
     "bg-red-600",
@@ -25,8 +32,12 @@ export default function Avatar({
     "bg-zinc-950",
   ];
 
+  // Pick a color deterministically based on the first character's char code
+  // Same username always maps to the same color
   const avatarColor = colors[username.charCodeAt(0) % colors.length];
 
+  // For multi-word usernames, use the first letter of each word (up to 2)
+  // For single-word usernames, use the first letter only
   const initials = username.includes(" ")
     ? username
         .split(" ")

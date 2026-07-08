@@ -1,3 +1,13 @@
+/**
+ * FilterBar Component
+ * Renders two independent filter axes for the dashboard:
+ * - Status filter (single-select): All / In Progress / Planned / Done
+ * - Type filter (multi-select): All / Games / Films / Series
+ *
+ * State is managed by the parent (DashboardPage) and passed down via props.
+ * toggleTypeFilter handles the "All" special case and collapse logic.
+ */
+
 export default function FilterBar({ statusFilter, setStatusFilter, typeFilters, toggleTypeFilter }) {
   const statuses = ['all', 'In Progress', 'Planned', 'Done']
   const types = ['all', 'game', 'movie', 'series']

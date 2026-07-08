@@ -5,6 +5,17 @@ import ResultList from '../components/ResultList'
 import EntryModal from '../components/EntryModal'
 import debounce from 'lodash.debounce'
 
+/**
+ * SearchPage
+ * Full search interface for discovering and adding media.
+ * Implements debounced auto-search (500ms) with two separate effects:
+ * - One for query changes: debounced, to avoid firing on every keystroke
+ * - One for type filter changes: immediate, since a filter click is intentional
+ *
+ * Clicking "+ Add" on a result opens EntryModal to fill in entry details before
+ * posting to the backend. The selected media and status are held in state until
+ * the modal confirms or cancels.
+ */
 export default function SearchPage() {
   const [results, setResults] = useState([])
   const [query, setQuery] = useState('')
@@ -14,12 +25,15 @@ export default function SearchPage() {
   const [selectedStatus, setSelectedStatus] = useState(null)
   const [isSearching, setIsSearching] = useState(false)
 
+  // useRef persists the debounced function without recreating it on every render
+  // Recreating it would reset the 500s timer on every keystroke
   const debouncedSearch = useRef(
     debounce(searchQuery => {
       handleSearch(searchQuery)
     }, 500)
   ).current
 
+  // Cancel any pending debounce call on unmount
   useEffect(() => {
     return () => {
       debouncedSearch.cancel()
@@ -45,6 +59,8 @@ export default function SearchPage() {
     }
   }
 
+  // Debounced effect for query changes, fires 500ms after the user stops typing
+  // Empty query clears results immediately without waiting for the debounce
   useEffect(() => {
     if (query.trim() === '') {
       setResults([])
@@ -55,6 +71,8 @@ export default function SearchPage() {
     debouncedSearch(query)
   }, [query])
 
+  // Immediate effect for type filter changes, no debounce needed since
+  // switching the filter is a deliberate action, not incremental input
   useEffect(() => {
     if (query.trim() !== '') {
       handleSearch(query)
