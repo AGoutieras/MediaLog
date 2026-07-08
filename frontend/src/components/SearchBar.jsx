@@ -1,5 +1,12 @@
 import { Loader2 } from 'lucide-react'
 
+/**
+ * SearchBar Component
+ * Controlled search input with media type filter buttons.
+ * All state (query, type, isSearching) is managed by the parent (SearchPage)
+ * via props, this component only handles display and user interaction.
+ * The Loader2 spinner is shown while the debounced search is in progress.
+ */
 export default function SearchBar({
   query,
   setQuery,
@@ -22,6 +29,7 @@ export default function SearchBar({
           value={query}
           onChange={e => setQuery(e.target.value)}
         />
+        {/* Spinner shown while the debounce timer is running or fetch is pending */}
         {isSearching && (
           <Loader2
             size={18}
@@ -29,6 +37,7 @@ export default function SearchBar({
           />
         )}
       </div>
+      {/* Media type filter buttons, active button gets accent background */}
       <div className="flex max-w-2xl mx-auto gap-2 mt-3">
         <button
           className={`${

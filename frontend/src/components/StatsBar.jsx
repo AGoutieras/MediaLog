@@ -1,6 +1,12 @@
 import { useAuth } from '../context/AuthContext'
 import Avatar from './Avatar'
 
+/**
+ * StatsBar Component
+ * Displays the authenticated user's avatar, username, and a summary
+ * of their media list broken down by status (total, in progress, planned, done).
+ * Counts are derived from the entries array on each render, no separate state needed.
+ */
 export default function StatsBar({ entries }) {
   const { user } = useAuth()
   const total = entries.length

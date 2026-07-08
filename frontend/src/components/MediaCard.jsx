@@ -1,9 +1,17 @@
 import { useEffect, useState } from 'react'
 
+/**
+ * MediaCard Component
+ * Displays a single search result row with cover, title, year, and media type badge.
+ * The "+ Add" button opens a status dropdown (Planned / In Progress / Done).
+ * Selecting a status calls onAdd(result, status), which opens EntryModal in the parent.
+ */
 export default function MediaCard({ result, onAdd }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   useEffect(() => {
     if (isDropdownOpen) {
+      // Close the dropdown when the user clicks anywhere outside of it
+      // The listener is only registered while the dropdown is open, and cleaned up
       function handleClickOutside() {
         setIsDropdownOpen(false)
       }
@@ -18,6 +26,7 @@ export default function MediaCard({ result, onAdd }) {
   return (
     <>
       <div className="flex items-center mt-6 border-b border-border gap-4 py-4">
+        {/* Cover image - fallback to title text if no cover available */}
         <div className="text-white w-14 h-20 overflow-hidden rounded-sm">
           {result.cover_url ? (
             <img
@@ -34,6 +43,7 @@ export default function MediaCard({ result, onAdd }) {
         <div className="flex-1 text-white min-w-0">
           <div className="flex gap-2 items-center">
             <p className="truncate">{result.title}</p>
+            {/* Media type badge with brand colors */}
             <span
               className={`rounded-md px-2 py-1 text-sm select-none ${
                 result.media_type === 'game'
@@ -54,6 +64,8 @@ export default function MediaCard({ result, onAdd }) {
           <button
             className="text-accent-soft rounded-full px-4 py-2 border border-transparent hover:border hover:border-accent transition cursor-pointer"
             type="button"
+            // stopPropagation prevents the document click listener from immediately
+            // closing the dropdown that was just opened
             onClick={e => {
               e.stopPropagation()
               setIsDropdownOpen(!isDropdownOpen)

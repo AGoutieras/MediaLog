@@ -1,9 +1,23 @@
 import { X, Star, EllipsisVertical, Pencil, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
+/**
+ * EntryDetailModal Component
+ * Read-only view of a user's media entry.
+ * Displays metadata fields conditionally based on media_type:
+ * - Games: platform, start/end date, playtime, completion percentage
+ * - Movies: platform, watched on (start_date only, no end date)
+ * - Series: platform, started/finished watching
+ * All types: note, rating
+ *
+ * The ellipsis menu gives access to Edit (opens EntryModal) and Delete actions.
+ */
 export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+  // Builds the external URL to the entry's page on IGDB or TMDB
+  // Games use the slug for a human-readable URL; films and series use the numeric external_id
+  // Returns null for games without a slug (incomplete IGDB data)
   function getExternalUrl(entry) {
     if (entry.media_type === 'game') {
       return entry.slug ? `https://www.igdb.com/games/${entry.slug}` : null
@@ -74,7 +88,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
           </div>
         )}
 
-        {/* Start date */}
+        {/* Start date  - label adapts per media type*/}
         {entry.start_date && (
           <div className="py-3 border-b border-border">
             <label className="text-text-muted text-xs uppercase tracking-wide">
@@ -90,7 +104,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
           </div>
         )}
 
-        {/* End date - not for movies */}
+        {/* End date - not shown for movies (single viewing date) */}
         {entry.media_type !== 'movie' && entry.end_date && (
           <div className="py-3 border-b border-border">
             <label className="text-text-muted text-xs uppercase tracking-wide">
@@ -104,7 +118,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
           </div>
         )}
 
-        {/* Playtime (game) */}
+        {/* Playtime - games only, != null to allow displaying 0h */}
         {entry.media_type === 'game' && entry.playtime_hours != null && (
           <div className="py-3 border-b border-border">
             <label className="text-text-muted text-xs uppercase tracking-wide">
@@ -116,7 +130,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
           </div>
         )}
 
-        {/* Completion percentage (game) */}
+        {/* Completion percentage - games only, != null to allow displaying 0%*/}
         {entry.media_type === 'game' && entry.completion_percentage != null && (
           <div className="py-3 border-b border-border">
             <label className="text-text-muted text-xs uppercase tracking-wide">
@@ -138,7 +152,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
           </div>
         )}
 
-        {/* Rating */}
+        {/* Rating - half-star display using overlapping SVG and clipPath-style overflow */}
         {entry.rating && (
           <div className="py-3 border-b border-border">
             <label className="text-text-muted text-xs uppercase tracking-wide">
@@ -158,6 +172,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
                     />
                     {(filled || half) && (
                       <div
+                        // Overflow hidden on a half-width div clips the filled star to 50%
                         className={`absolute overflow-hidden ${half ? 'w-1/2' : 'w-full'} h-full`}
                       >
                         <Star size={16} fill="#FFB800" stroke="#FFB800" />
@@ -166,6 +181,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
                   </div>
                 )
               })}
+              {/* Remove trailing .0 for whole number ratings (PostgreSQL returns NUMERIC as string) */}
               <span className="text-white text-sm ml-1">
                 {parseFloat(entry.rating) % 1 === 0
                   ? parseInt(entry.rating)
@@ -176,7 +192,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
           </div>
         )}
 
-        {/* Footer: external link + menu */}
+        {/* Footer: external link + ellipsis menu (Edit / Delete) */}
         <div className="flex justify-between items-center pt-4">
           {getExternalUrl(entry) ? (
             <a
@@ -186,6 +202,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
               className="group relative text-accent-soft hover:text-accent-soft text-sm rounded-md px-2 py-1 border border-border-strong transition-colors duration-100"
             >
               <span>View details</span>
+              {/* Sequential border-draw animation on hover using transition delay */}
               <span className="absolute left-0 top-0 h-px w-0 bg-accent-soft transition-all duration-50 group-hover:w-full" />
               <span className="absolute right-0 top-0 h-0 w-px bg-accent-soft transition-all delay-100 duration-50 group-hover:h-full" />
               <span className="absolute bottom-0 right-0 h-px w-0 bg-accent-soft transition-all delay-200 duration-50 group-hover:w-full" />
@@ -203,6 +220,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
               <EllipsisVertical size={18} />
             </button>
 
+            {/* Dropdown menu - clipPath animation slides up from the button */}
             <div
               className="absolute right-0 bottom-full mb-1 w-32 overflow-hidden transition-all duration-100 z-10"
               style={{

@@ -14,16 +14,29 @@ import EntryDetailModal from './EntryDetailModal'
 import { useAuth } from '../context/AuthContext'
 import EntryModal from './EntryModal'
 
+/**
+ * MediaGrid Component
+ * Renders the dashboard's main content: one section per status (In Progress, Planned, Done).
+ * Each section has a + button (opens QuickAddModal) and a sort dropdown.
+ * Clicking a tile opens EntryDetailModal; clicking Edit inside it opens EntryModal.
+ *
+ * Receives filtered entries from DashboardPage, filtering by status and type
+ * is handled upstream, MediaGrid only handles grouping and sorting.
+ */
 export default function MediaGrid({ entries, statusFilter, refetch }) {
+  // If a specific status is selected in FilterBar, show only that section
   const allStatuses = ['In Progress', 'Planned', 'Done']
   const statuses = statusFilter === 'all' ? allStatuses : [statusFilter]
+
   const [openModalStatus, setOpenModalStatus] = useState(null)
+  // sortBy is an object keyed by status so each section has its own independant sort
   const [sortBy, setSortBy] = useState({})
   const [openSortStatus, setOpenSortStatus] = useState(null)
   const [selectedEntry, setSelectedEntry] = useState(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const { token } = useAuth()
 
+  // Pure sort function, does not mutate the original array
   function sortItems(items, sort) {
     const sorted = [...items]
     if (sort === 'date_desc')
@@ -50,6 +63,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       })
+      // Refetch entries from the parent to update the grid without a full page reload
       refetch()
       setSelectedEntry(null)
     } catch (err) {
@@ -71,6 +85,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
+          // Status is preserved from the existing entry, not editable from this modal
           status: selectedEntry.status,
           note: fields.note,
           rating: fields.rating,
@@ -97,6 +112,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
         const currentSort = sortBy[status] || 'date_desc'
         const sortedItems = sortItems(items, currentSort)
 
+        // Rating sort is only available for Done entries (other statuses have no rating)
         const sortOptions =
           status === 'Done'
             ? [
@@ -142,6 +158,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
           <div key={status} className="mb-8">
             <div className="flex items-center gap-2 mb-2">
               <p className="text-text-muted mb-2">{status}</p>
+              {/* + button always visible even when section is empty, allows adding to any status */}
               <button
                 onClick={() => setOpenModalStatus(status)}
                 className="text-text-muted hover:text-white cursor-pointer mb-1.5"
@@ -149,6 +166,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
                 <Plus size={20} />
               </button>
 
+              {/* Sort dropdown - clipPath animation, state scoped per section */}
               <div className="relative ml-auto">
                 <div className="flex items-center gap-1 text-sm">
                   <span className="text-text-primary select-none">
@@ -201,6 +219,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
               </div>
             </div>
 
+            {/* Empty state - always rendered so the + button remains accessible */}
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8 text-text-faint">
                 <p className="text-sm">No {status.toLowerCase()} entries yet</p>
@@ -222,6 +241,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
         )
       })}
 
+      {/* QuickAddModal opened per section via the + button */}
       {openModalStatus && (
         <QuickAddModal
           status={openModalStatus}
@@ -229,6 +249,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
           onAdded={refetch}
         />
       )}
+      {/* EntryDetailModal opened by clicking a tile, closed before showing edit modal */}
       {selectedEntry && !isEditModalOpen && (
         <EntryDetailModal
           entry={selectedEntry}
@@ -238,6 +259,8 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
         />
       )}
 
+      {/* EntryModal in edit mode - initial props pre-fill all fields from the existing entry
+          .slice(0, 10) converts ISO timestamps to YYYY-MM-DD for date inputs */}
       {isEditModalOpen && selectedEntry && (
         <EntryModal
           media={selectedEntry}

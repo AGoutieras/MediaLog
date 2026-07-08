@@ -4,6 +4,8 @@ import { searchMovies, searchSeries, getWatchProviders, } from '../services/tmdb
 
 const router = express.Router()
 
+// ------ GET /search ------------------------------------------
+
 router.get('/', async (req, res) => {
   try {
     const {
@@ -30,6 +32,8 @@ router.get('/', async (req, res) => {
 
       return res.status(200).json(results)
     } else if (type === 'all') {
+      // Run all three API calls in parallel to reduce total response time
+      // compared to sequential awaits
       const [games, movies, series] = await Promise.all([
         searchGames(q),
         searchMovies(q),
@@ -48,6 +52,10 @@ router.get('/', async (req, res) => {
     })
   }
 })
+
+// ------ GET /search/providers/:type/:id ------------------------------------------
+// Fetches flatrate streaming providers for a film or series from TMDB
+// filtered to France (FR), only available for movies and series types
 
 router.get('/providers/:type/:id', async (req, res) => {
   try {
@@ -68,6 +76,10 @@ router.get('/providers/:type/:id', async (req, res) => {
     })
   }
 })
+
+// ------ GET /search/game/:id ------------------------------------------
+// Fetches the platform list for a specific game from IGDB by its external ID
+// Used when opening the edit modal, sincd platform data is not stored in the DB
 
 router.get('/game/:id', async (req, res) => {
   try {

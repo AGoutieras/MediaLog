@@ -2,6 +2,17 @@ import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate, Navigate } from 'react-router-dom'
 
+/**
+ * LoginPage
+ * Handles both login and registration in a single component using a mode state.
+ * The two forms share the same fields (email, password) with register adding
+ * username and confirm password. Switching tabs reuses the same JSX via
+ * conditional rendering.
+ *
+ * Client-side validation runs before the API call to avoid unnecessary requests.
+ * Error state is an object keyed by field name so each input can display
+ * its own error independently.
+ */
 export default function LoginPage() {
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
@@ -10,6 +21,7 @@ export default function LoginPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const { login, token } = useAuth()
   const navigate = useNavigate()
+  // Error object keyed by field name (email, password, username, confirmPassword, general)
   const [error, setError] = useState({})
 
   async function handleSubmit() {
@@ -18,6 +30,7 @@ export default function LoginPage() {
       const body =
         mode === 'login' ? { email, password } : { email, password, username }
 
+      // Client-side validation, runs before the API call
       if (mode === 'register' && password !== confirmPassword) {
         setError({ confirmPassword: 'Passwords do not match' })
         return
@@ -47,6 +60,7 @@ export default function LoginPage() {
 
       if (!response.ok) {
         const data = await response.json()
+        // Map API error messages to specific field errors for inline display
         if (data.message === 'Email already in use.') {
           setError({ email: data.message })
         } else if (data.message === 'Username already in use') {
@@ -59,6 +73,7 @@ export default function LoginPage() {
 
       const data = await response.json()
 
+      // Store the token and update auth state, then redirect to the dashboard
       login(data.token, data.user)
       navigate('/dashboard')
     } catch (err) {
@@ -66,6 +81,7 @@ export default function LoginPage() {
     }
   }
 
+  // Redirect authenticated users away from the login page
   if (token) {
     return <Navigate to="/dashboard" />
   }
@@ -77,7 +93,7 @@ export default function LoginPage() {
         {/* App title */}
         <div className="text-2xl font-bold text-center mb-6">MediaLog</div>
 
-        {/* Tab switcher: Login / Register */}
+        {/* Tab switcher: animated sliding underline indicates the active mode */}
         <div className="relative flex w-full border-b border-border-strong mb-6">
           <button
             onClick={() => setMode('login')}
@@ -99,7 +115,7 @@ export default function LoginPage() {
           >
             Register
           </button>
-          {/* Sliding indicator */}
+          {/* Sliding indicator moves with translateX instead of re-rendering */}
           <div
             className="absolute bottom-0 h-0.5 w-1/2 bg-accent transition-transform duration-300"
             style={{

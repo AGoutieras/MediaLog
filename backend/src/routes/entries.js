@@ -3,8 +3,14 @@ import { pool } from "../db/index.js";
 
 const router = express.Router();
 
+// ------ GET /entries ------------------------------------------
+
 router.get('/', async (req, res) => {
   try {
+    // JOIN across 3 tables to reconstruct full entry data:
+    // user_media holds user-specific state (status, rating, note, dates...)
+    // medias holds shared metadata (title, cover, year, slug)
+    // media_types resolves the type ID to a readable string (game/movie/series)
     const result = await pool.query(
       `SELECT user_media.*, medias.external_id, medias.slug, medias.title, medias.year, medias.cover_url, media_types.name AS media_type
        FROM user_media
@@ -19,6 +25,8 @@ router.get('/', async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' })
   }
 })
+
+// ------ POST /entries ------------------------------------------
 
 router.post("/", async (req, res) => {
   try {
@@ -40,6 +48,7 @@ router.post("/", async (req, res) => {
       playtime_hours
     } = req.body;
 
+    // Resolve the media type name to its UUID in the media_types lookup table
     const result = await pool.query(
       "SELECT id FROM media_types WHERE name = $1",
       [media_type],
@@ -53,6 +62,9 @@ router.post("/", async (req, res) => {
 
     const mediaTypeId = result.rows[0].id;
 
+    // Upsert the media record: if the same external_id + media_type already exists
+    // (e.g. another user added the same game), update cover_url and slug instead of
+    // inserting a duplicate, media metadata is shared across all users
     const mediaEntry = await pool.query(
       "INSERT INTO medias (external_id, slug, media_type_id, title, year, cover_url) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (external_id, media_type_id) DO UPDATE SET cover_url = EXCLUDED.cover_url, slug = EXCLUDED.slug RETURNING *",
       [external_id, slug, mediaTypeId, title, year, cover_url],
@@ -60,6 +72,10 @@ router.post("/", async (req, res) => {
 
     const mediaId = mediaEntry.rows[0].id
 
+    // Insert the user-specific entry, DO NOTHING on conflict means the same user
+    // cannot add the same media twice; an empty result triggers a 409 response
+    // ?? (nullish coalescing) is used instead of || to avoid overwriting valid
+    // falsy values like 0 (completion_percentage, playtime hours)
     const insertMedia = await pool.query(
       `INSERT INTO user_media 
         (user_id, media_id, status, note, rating, start_date, end_date, watched_before, platform, completion_percentage, playtime_hours) 
@@ -92,6 +108,8 @@ router.post("/", async (req, res) => {
   }
 });
 
+// ------ PUT /entries/:id ------------------------------------------
+
 router.put("/:id", async (req, res) => {
   try {
     const {
@@ -107,6 +125,7 @@ router.put("/:id", async (req, res) => {
     } = req.body;
     const id = req.params.id;
 
+    // WHERE user_id = $10 ensures a user can only update their own entries
     const updatedEntry = await pool.query(
       `UPDATE user_media SET 
         status = $1, 
@@ -146,10 +165,14 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+// ------ DELETE /entries/:id ------------------------------------------
+
 router.delete("/:id", async (req, res) => {
   try {
     const id = req.params.id;
 
+    // WHERE user_id = $1 prevents a user from deleting another user's entries
+    // The medias record is intentionally kept, it may still be referenced by other users
     const result = await pool.query(
       "DELETE FROM user_media WHERE user_id = $1 AND id = $2 RETURNING *",
       [req.user.id, id]
