@@ -12,7 +12,9 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT
 
-app.use(cors())
+app.use(cors({
+  origin: ['https://medialog-app.vercel.app', 'http://localhost:5173']
+}))
 
 app.use(express.json())
 
