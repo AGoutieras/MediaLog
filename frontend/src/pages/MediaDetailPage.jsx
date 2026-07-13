@@ -28,12 +28,9 @@ export default function MediaDetailPage() {
   useEffect(() => {
     async function fetchDetails() {
       try {
-        const res = await fetch(
-          `http://localhost:3000/search/details/${type}/${id}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        )
+        const res = await fetch(`${API_URL}/search/details/${type}/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
         const data = await res.json()
         setMedia(data)
       } catch (err) {
@@ -46,7 +43,7 @@ export default function MediaDetailPage() {
   }, [type, id, token])
 
   useEffect(() => {
-    fetch('http://localhost:3000/entries', {
+    fetch('${API_URL}/entries', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
@@ -59,7 +56,7 @@ export default function MediaDetailPage() {
 
   async function handleConfirm(fields) {
     try {
-      await fetch('http://localhost:3000/entries', {
+      await fetch('${API_URL}/entries', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

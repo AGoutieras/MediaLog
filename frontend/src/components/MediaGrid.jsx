@@ -59,7 +59,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
 
   async function handleDelete(entryId) {
     try {
-      await fetch(`http://localhost:3000/entries/${entryId}`, {
+      await fetch(`${API_URL}/entries/${entryId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -78,7 +78,7 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
 
   async function handleUpdateEntry(fields) {
     try {
-      await fetch(`http://localhost:3000/entries/${selectedEntry.id}`, {
+      await fetch(`${API_URL}/entries/${selectedEntry.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
