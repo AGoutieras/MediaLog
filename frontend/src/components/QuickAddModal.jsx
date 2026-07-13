@@ -56,7 +56,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
   async function handleSearch(searchQuery = query) {
     try {
       const response = await fetch(
-        `http://localhost:3000/search?q=${searchQuery}&type=all`,
+        `${API_URL}/search?q=${searchQuery}&type=all`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,7 +74,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
 
   async function handleConfirm(fields) {
     try {
-      const response = await fetch("http://localhost:3000/entries", {
+      const response = await fetch("${API_URL}/entries", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -116,7 +116,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
   // external_id is coerced to string since IGDB returns numeric IDs
   // but they are stored as strings in the DB
   useEffect(() => {
-    fetch("http://localhost:3000/entries", {
+    fetch("${API_URL}/entries", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())

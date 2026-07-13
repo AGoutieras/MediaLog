@@ -65,7 +65,7 @@ export default function EntryModal({
       // Fetch FR flatrate streaming providers from TMDB for the platform dropdown
       setLoadingProviders(true)
       fetch(
-        `http://localhost:3000/search/providers/${media.media_type}/${media.external_id}`,
+        `${API_URL}/search/providers/${media.media_type}/${media.external_id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -78,7 +78,7 @@ export default function EntryModal({
       // In edit mode, platform data is not available from the search result
       // so we re-fetch the game's platform list from IGDB using its external_id
       setLoadingProviders(true)
-      fetch(`http://localhost:3000/search/game/${media.external_id}`, {
+      fetch(`${API_URL}/search/game/${media.external_id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then(res => res.json())
