@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import EntryModal from '../components/EntryModal'
 import { ArrowLeft, Star, CircleCheckBig } from 'lucide-react'
+import API_URL from '../config.js'
 
 /**
  * MediaDetailPage
@@ -43,7 +44,7 @@ export default function MediaDetailPage() {
   }, [type, id, token])
 
   useEffect(() => {
-    fetch('${API_URL}/entries', {
+    fetch(`${API_URL}/entries`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
@@ -56,7 +57,7 @@ export default function MediaDetailPage() {
 
   async function handleConfirm(fields) {
     try {
-      await fetch('${API_URL}/entries', {
+      await fetch(`${API_URL}/entries`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

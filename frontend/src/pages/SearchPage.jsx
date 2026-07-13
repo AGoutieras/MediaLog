@@ -3,6 +3,7 @@ import { useRef, useEffect } from 'react'
 import SearchBar from '../components/SearchBar'
 import ResultList from '../components/ResultList'
 import debounce from 'lodash.debounce'
+import API_URL from '../config.js'
 
 /**
  * SearchPage

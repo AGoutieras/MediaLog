@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Check, X, SquarePen } from 'lucide-react'
+import API_URL from '../config.js'
 
 /**
  * ProfilePage
@@ -28,7 +29,7 @@ export default function ProfilePage() {
 
   async function handleSaveUsername() {
     try {
-      const response = await fetch('${API_URL}/auth/profile', {
+      const response = await fetch(`${API_URL}/auth/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +56,7 @@ export default function ProfilePage() {
 
   async function handleSaveEmail() {
     try {
-      const response = await fetch('${API_URL}/auth/profile', {
+      const response = await fetch(`${API_URL}/auth/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +89,7 @@ export default function ProfilePage() {
     }
 
     try {
-      const response = await fetch('${API_URL}/auth/profile', {
+      const response = await fetch(`${API_URL}/auth/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

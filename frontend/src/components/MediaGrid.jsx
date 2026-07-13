@@ -13,6 +13,7 @@ import {
 import EntryDetailModal from './EntryDetailModal'
 import { useAuth } from '../context/AuthContext'
 import EntryModal from './EntryModal'
+import API_URL from '../config.js'
 
 /**
  * MediaGrid Component
@@ -276,7 +277,9 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
           initialStartDate={selectedEntry.start_date?.slice(0, 10) ?? ''}
           initialEndDate={selectedEntry.end_date?.slice(0, 10) ?? ''}
           initialWatchedBefore={selectedEntry.watched_before ?? false}
-          initialCompletionPercentage={selectedEntry.completion_percentage ?? null}
+          initialCompletionPercentage={
+            selectedEntry.completion_percentage ?? null
+          }
           initialPlaytimeHours={selectedEntry.playtime_hours ?? ''}
           isEditing={true}
         />

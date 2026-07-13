@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { House, Search, LogOut, UserPen } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import Avatar from './Avatar'
+import logo from '../assets/logo.svg'
 
 /**
  * Navbar Component
@@ -36,7 +37,7 @@ export default function Navbar() {
     <nav className="flex items-center justify-between px-8 py-4 border-b border-border sticky top-0 z-10 bg-base">
       {/* Title */}
       <div>
-        <img src="/src/assets/logo.svg" alt="MediaLog" className="h-10" />
+        <img src={logo} alt="MediaLog" className="h-10" />
       </div>
 
       {/* NavLink applies active styles automatically based on the current route */}

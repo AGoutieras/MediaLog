@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import { X, Loader2, Check } from "lucide-react";
-import EntryModal from "./EntryModal";
-import debounce from "lodash.debounce";
+import { useState, useRef, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { X, Loader2, Check } from 'lucide-react'
+import EntryModal from './EntryModal'
+import debounce from 'lodash.debounce'
+import API_URL from '../config.js'
 
 /**
  * QuickAddModal Component
@@ -17,41 +18,41 @@ import debounce from "lodash.debounce";
  * - Opens EntryModal when a result is selected to fill in entry details
  */
 export default function QuickAddModal({ status, onClose, onAdded }) {
-  const { token } = useAuth();
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const [selectedMedia, setSelectedMedia] = useState(null);
-  const [isEntryModalOpen, setIsEntryModalOpen] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
+  const { token } = useAuth()
+  const [query, setQuery] = useState('')
+  const [results, setResults] = useState([])
+  const [selectedMedia, setSelectedMedia] = useState(null)
+  const [isEntryModalOpen, setIsEntryModalOpen] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
   // addedEntries maps external_id (string) -> status for already-added detection
-  const [addedEntries, setAddedEntries] = useState({});
+  const [addedEntries, setAddedEntries] = useState({})
 
   // useRef persists the debounced function across renders without recreating it
   // Creating it inside the component body would reset the timer on every keystroke
   const debouncedSearch = useRef(
-    debounce((searchQuery) => {
-      handleSearch(searchQuery);
-    }, 500),
-  ).current;
+    debounce(searchQuery => {
+      handleSearch(searchQuery)
+    }, 500)
+  ).current
 
   // Cancel any pending debounce call when the component unmounts
   useEffect(() => {
     return () => {
-      debouncedSearch.cancel();
-    };
-  }, [debouncedSearch]);
+      debouncedSearch.cancel()
+    }
+  }, [debouncedSearch])
 
   // Trigger debounced search on every query change
   // Empty query clears results immediately without waiting for the debounce
   useEffect(() => {
-    if (query.trim() === "") {
-      setResults([]);
-      setIsSearching(false);
-      return;
+    if (query.trim() === '') {
+      setResults([])
+      setIsSearching(false)
+      return
     }
-    setIsSearching(true);
-    debouncedSearch(query);
-  }, [query]);
+    setIsSearching(true)
+    debouncedSearch(query)
+  }, [query])
 
   async function handleSearch(searchQuery = query) {
     try {
@@ -61,23 +62,23 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
-      );
-      const data = await response.json();
-      setResults(data);
+        }
+      )
+      const data = await response.json()
+      setResults(data)
     } catch (err) {
-      console.error(err);
+      console.error(err)
     } finally {
-      setIsSearching(false);
+      setIsSearching(false)
     }
   }
 
   async function handleConfirm(fields) {
     try {
-      const response = await fetch("${API_URL}/entries", {
-        method: "POST",
+      const response = await fetch(`${API_URL}/entries`, {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
@@ -97,38 +98,38 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
           completion_percentage: fields.completion_percentage,
           playtime_hours: fields.playtime_hours,
         }),
-      });
-      const data = await response.json();
+      })
+      const data = await response.json()
       // Notify the parent to refetch entries, then close both modals
-      onAdded();
-      onClose();
+      onAdded()
+      onClose()
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
   }
 
   function handleSelectMedia(media) {
-    setSelectedMedia(media);
-    setIsEntryModalOpen(true);
+    setSelectedMedia(media)
+    setIsEntryModalOpen(true)
   }
 
   // Fetch current entries on mount to build the already-added map
   // external_id is coerced to string since IGDB returns numeric IDs
   // but they are stored as strings in the DB
   useEffect(() => {
-    fetch("${API_URL}/entries", {
+    fetch(`${API_URL}/entries`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => res.json())
-      .then((data) => {
-        const map = {};
-        data.forEach((e) => {
-          map[String(e.external_id)] = e.status;
-        });
-        setAddedEntries(map);
+      .then(res => res.json())
+      .then(data => {
+        const map = {}
+        data.forEach(e => {
+          map[String(e.external_id)] = e.status
+        })
+        setAddedEntries(map)
       })
-      .catch(() => {});
-  }, [token]);
+      .catch(() => {})
+  }, [token])
 
   return (
     <div className="fixed inset-0 backdrop-blur-xs flex items-center justify-center">
@@ -150,7 +151,7 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
               className="bg-surface-2 border border-border-strong text-white rounded-md px-4 py-2 w-full focus:outline-none focus:border-accent"
               placeholder="Search..."
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={e => setQuery(e.target.value)}
             />
             {isSearching && (
               <Loader2
@@ -160,15 +161,15 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
             )}
           </div>
           <div className="mt-4 max-h-80 overflow-y-auto">
-            {results.map((result) => (
+            {results.map(result => (
               <div
                 key={result.external_id}
                 onClick={() => handleSelectMedia(result)}
                 // Already-added entries get an elevated background to distinguish them
                 className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors ${
                   addedEntries[String(result.external_id)]
-                    ? "bg-surface-2 hover:bg-surface-3"
-                    : "hover:bg-surface-2"
+                    ? 'bg-surface-2 hover:bg-surface-3'
+                    : 'hover:bg-surface-2'
                 }`}
               >
                 <div className="w-10 h-14 overflow-hidden rounded-sm shrink-0">
@@ -187,11 +188,11 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="text-text-muted text-xs">{result.year}</p>
                       {/* Platform abbreviation pills, games only, sourced from IGDB */}
-                      {result.media_type === "game" &&
+                      {result.media_type === 'game' &&
                         result.platforms?.length > 0 && (
                           <>
                             <span className="text-text-faint text-xs">·</span>
-                            {result.platforms.map((p) => (
+                            {result.platforms.map(p => (
                               <span
                                 key={p.id}
                                 className="text-text-muted text-xs bg-surface-3 rounded-2xl px-1.5 py-0.5"
@@ -222,13 +223,13 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
                     {/* Media type badge */}
                     <span
                       className={`select-none rounded-md px-2 py-1 text-text-primary text-xs w-fit ${
-                        result.media_type === "game"
-                          ? "bg-[#0070CC]"
-                          : result.media_type === "movie"
-                            ? "bg-[#B20710]"
-                            : result.media_type === "series"
-                              ? "bg-[#0F9D58]"
-                              : "bg-surface-3"
+                        result.media_type === 'game'
+                          ? 'bg-[#0070CC]'
+                          : result.media_type === 'movie'
+                            ? 'bg-[#B20710]'
+                            : result.media_type === 'series'
+                              ? 'bg-[#0F9D58]'
+                              : 'bg-surface-3'
                       }`}
                     >
                       {result.media_type}
@@ -250,5 +251,5 @@ export default function QuickAddModal({ status, onClose, onAdded }) {
         />
       )}
     </div>
-  );
+  )
 }
