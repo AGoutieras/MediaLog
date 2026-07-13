@@ -28,7 +28,7 @@ export default function ProfilePage() {
 
   async function handleSaveUsername() {
     try {
-      const response = await fetch('http://localhost:3000/auth/profile', {
+      const response = await fetch('${API_URL}/auth/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export default function ProfilePage() {
 
   async function handleSaveEmail() {
     try {
-      const response = await fetch('http://localhost:3000/auth/profile', {
+      const response = await fetch('${API_URL}/auth/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ export default function ProfilePage() {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/auth/profile', {
+      const response = await fetch('${API_URL}/auth/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

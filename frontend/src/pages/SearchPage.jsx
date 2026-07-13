@@ -37,7 +37,7 @@ export default function SearchPage() {
   async function handleSearch(searchQuery = query) {
     try {
       const response = await fetch(
-        `http://localhost:3000/search?q=${searchQuery}&type=${type}`,
+        `${API_URL}/search?q=${searchQuery}&type=${type}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -72,7 +72,6 @@ export default function SearchPage() {
       handleSearch(query)
     }
   }, [type])
-
 
   return (
     <div className="p-8 pt-12">

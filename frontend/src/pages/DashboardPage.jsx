@@ -20,7 +20,7 @@ export default function DashboardPage() {
   const [typeFilters, setTypeFilters] = useState(["all"]);
 
   async function fetchEntries() {
-    const response = await fetch("http://localhost:3000/entries", {
+    const response = await fetch("${API_URL}/entries", {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
