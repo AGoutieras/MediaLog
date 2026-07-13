@@ -126,7 +126,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="bg-base min-h-screen flex justify-center pt-24">
+    <div className="min-h-screen flex justify-center pt-24">
       <div className="bg-surface border border-border-strong rounded-xl p-12 w-150 h-fit shadow-[0_34px_70px_-18px_rgba(0,0,0,0.78)]">
         <h1 className="text-white text-2xl font-bold mb-6">Edit Profile</h1>
 

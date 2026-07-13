@@ -1,5 +1,6 @@
 import { X, Star, EllipsisVertical, Pencil, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 /**
  * EntryDetailModal Component
@@ -14,6 +15,7 @@ import { useState } from 'react'
  */
 export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const navigate = useNavigate()
 
   // Builds the external URL to the entry's page on IGDB or TMDB
   // Games use the slug for a human-readable URL; films and series use the numeric external_id
@@ -194,23 +196,18 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
 
         {/* Footer: external link + ellipsis menu (Edit / Delete) */}
         <div className="flex justify-between items-center pt-4">
-          {getExternalUrl(entry) ? (
-            <a
-              href={getExternalUrl(entry)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative text-accent-soft hover:text-accent-soft text-sm rounded-md px-2 py-1 border border-border-strong transition-colors duration-100"
-            >
-              <span>View details</span>
-              {/* Sequential border-draw animation on hover using transition delay */}
-              <span className="absolute left-0 top-0 h-px w-0 bg-accent-soft transition-all duration-50 group-hover:w-full" />
-              <span className="absolute right-0 top-0 h-0 w-px bg-accent-soft transition-all delay-100 duration-50 group-hover:h-full" />
-              <span className="absolute bottom-0 right-0 h-px w-0 bg-accent-soft transition-all delay-200 duration-50 group-hover:w-full" />
-              <span className="absolute bottom-0 left-0 h-0 w-px bg-accent-soft transition-all delay-300 duration-50 group-hover:h-full" />
-            </a>
-          ) : (
-            <span />
-          )}
+          <button
+            onClick={() =>
+              navigate(`/media/${entry.media_type}/${entry.external_id}`)
+            }
+            className="group relative text-accent-soft hover:text-accent-soft text-sm rounded-md px-2 py-1 border border-border-strong transition-colors duration-100 cursor-pointer"
+          >
+            <span>View details</span>
+            <span className="absolute left-0 top-0 h-px w-0 bg-accent-soft transition-all duration-50 group-hover:w-full" />
+            <span className="absolute right-0 top-0 h-0 w-px bg-accent-soft transition-all delay-100 duration-50 group-hover:h-full" />
+            <span className="absolute bottom-0 right-0 h-px w-0 bg-accent-soft transition-all delay-200 duration-50 group-hover:w-full" />
+            <span className="absolute bottom-0 left-0 h-0 w-px bg-accent-soft transition-all delay-300 duration-50 group-hover:h-full" />
+          </button>
 
           <div className="relative">
             <button
