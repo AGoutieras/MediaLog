@@ -76,3 +76,51 @@ export async function getGameById(id) {
 
   return igdbData[0]?.platforms ?? []
 }
+
+// Fetched full details for a single game - used for the media detail page
+export async function getGameDetails(id) {
+  const token = await getToken()
+
+  const igdbResponse = await fetch(`https://api.igdb.com/v4/games`, {
+    method: 'POST',
+    headers: {
+      'Client-ID': process.env.TWITCH_CLIENT_ID,
+      Authorization: `Bearer ${token}`,
+    },
+    body: `fields name, cover.url, summary, first_release_date, slug,
+      genres.name, platforms.name, platforms.abbreviation,
+      involved_companies.company.name, involved_companies.developer, involved_companies.publisher,
+      rating, rating_count, aggregated_rating, aggregated_rating_count,
+      screenshots.url,
+      themes.name;
+      where id = ${parseInt(id)};`,
+  })
+
+  const data = await igdbResponse.json()
+  const game = data[0]
+  if (!game) return null
+
+  const developers = game.involved_companies?.filter(c => c.developer).map(c => c.company.name) ?? []
+  const publishers = game.involved_companies?.filter(c => c.publisher).map(c => c.company.name) ?? []
+
+  return {
+    external_id: game.id,
+    title: game.name,
+    slug: game.slug,
+    media_type: 'game',
+    cover_url: game.cover ? `https:${game.cover.url}`.replace('t_thumb', 't_cover_big') : null,
+    year: game.first_release_date ? new Date(game.first_release_date * 1000).getFullYear().toString() : null,
+    summary: game.summary ?? null,
+    genres: game.genres?.map(g => g.name) ?? [],
+    platforms: game.platforms ?? [],
+    developers,
+    publishers,
+    rating: game.rating ? Math.round(game.rating) : null,
+    rating_count:  game.rating_count ?? null,
+    aggregated_rating: game.aggregated_rating ? Math.round(game.aggregated_rating) : null,
+    aggregated_rating_count: game.aggregated_rating_count ?? null,
+    screenshots: game.screenshots?.map(s => `https:${s.url}`.replace('t_thumb', 't_1080p')) ?? [],
+    themes: game.themes?.map(t => t.name) ?? [],
+    backdrop_url: game.screenshots?.[0] ? `https:${game.screenshots[0].url}`.replace('t_thumb', 't_1080p') : null,
+  }
+}

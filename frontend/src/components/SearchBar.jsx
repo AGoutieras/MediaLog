@@ -15,12 +15,12 @@ export default function SearchBar({
   isSearching,
 }) {
   const inputClass =
-    'bg-surface border border-border-strong text-white rounded-md px-4 py-3 w-full focus:outline-none focus:border-accent'
+    'bg-surface border border-border-strong text-white rounded-md px-4 py-4 w-full focus:outline-none focus:border-accent'
   const filterBase =
     'text-white rounded-full px-5 py-2 transition cursor-pointer'
   return (
     <>
-      <div className="relative max-w-2xl mx-auto">
+      <div className="relative max-w-3xl mx-auto">
         <input
           className={inputClass}
           type="text"
@@ -38,7 +38,7 @@ export default function SearchBar({
         )}
       </div>
       {/* Media type filter buttons, active button gets accent background */}
-      <div className="flex max-w-2xl mx-auto gap-2 mt-3">
+      <div className="flex max-w-5xl mx-auto gap-2 mt-3 mb-3">
         <button
           className={`${
             type === 'all'

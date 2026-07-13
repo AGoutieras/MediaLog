@@ -5,6 +5,7 @@ import DashboardPage from './pages/DashboardPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
 import ProfilePage from './pages/ProfilePage'
+import MediaDetailPage from './pages/MediaDetailPage'
 
 /**
  * PrivateLayout
@@ -62,6 +63,16 @@ function App() {
               <ProtectedRoute>
                 <PrivateLayout>
                   <ProfilePage />
+                </PrivateLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/media/:type/:id"
+            element={
+              <ProtectedRoute>
+                <PrivateLayout>
+                  <MediaDetailPage />
                 </PrivateLayout>
               </ProtectedRoute>
             }
