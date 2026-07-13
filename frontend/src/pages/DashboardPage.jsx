@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import StatsBar from "../components/StatsBar";
-import MediaGrid from "../components/MediaGrid";
-import FilterBar from "../components/FilterBar";
+import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
+import StatsBar from '../components/StatsBar'
+import MediaGrid from '../components/MediaGrid'
+import FilterBar from '../components/FilterBar'
+import API_URL from '../config.js'
 
 /**
  * DashboardPage
@@ -14,53 +15,53 @@ import FilterBar from "../components/FilterBar";
  * components can trigger a data refresh after add, edit, or delete.
  */
 export default function DashboardPage() {
-  const { token } = useAuth();
-  const [entries, setEntries] = useState([]);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [typeFilters, setTypeFilters] = useState(["all"]);
+  const { token } = useAuth()
+  const [entries, setEntries] = useState([])
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [typeFilters, setTypeFilters] = useState(['all'])
 
   async function fetchEntries() {
-    const response = await fetch("${API_URL}/entries", {
+    const response = await fetch(`${API_URL}/entries`, {
       headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json();
-    setEntries(data);
+    })
+    const data = await response.json()
+    setEntries(data)
   }
 
   useEffect(() => {
-    fetchEntries();
-  }, []);
+    fetchEntries()
+  }, [])
 
   // Both filters are applied simultaneously, entries must match both status and type
-  const filteredEntries = entries.filter((entry) => {
-    const matchStatus = statusFilter === "all" || entry.status === statusFilter;
+  const filteredEntries = entries.filter(entry => {
+    const matchStatus = statusFilter === 'all' || entry.status === statusFilter
     const matchType =
-      typeFilters.includes("all") || typeFilters.includes(entry.media_type);
-    return matchStatus && matchType;
-  });
+      typeFilters.includes('all') || typeFilters.includes(entry.media_type)
+    return matchStatus && matchType
+  })
 
   function toggleTypeFilter(type) {
     // Selecting "All" resets the type filter
-    if (type === "all") {
-      setTypeFilters(["all"]);
-      return;
+    if (type === 'all') {
+      setTypeFilters(['all'])
+      return
     }
 
     // Start from an empty array if "All" was previously selected
-    let updated = typeFilters.includes("all") ? [] : [...typeFilters];
+    let updated = typeFilters.includes('all') ? [] : [...typeFilters]
 
     if (updated.includes(type)) {
-      updated = updated.filter((t) => t !== type);
+      updated = updated.filter(t => t !== type)
     } else {
-      updated.push(type);
+      updated.push(type)
     }
 
     // If no type or all 3 types are selected, collapse back to "All"
     if (updated.length === 0 || updated.length === 3) {
-      updated = ["all"];
+      updated = ['all']
     }
 
-    setTypeFilters(updated);
+    setTypeFilters(updated)
   }
 
   return (
@@ -85,5 +86,5 @@ export default function DashboardPage() {
         />
       </div>
     </div>
-  );
+  )
 }

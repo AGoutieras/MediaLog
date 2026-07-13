@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate, Navigate } from 'react-router-dom'
+import API_URL from '../config.js'
+import logo from '../assets/logo.svg'
 
 /**
  * LoginPage
@@ -92,7 +94,7 @@ export default function LoginPage() {
       <div className="bg-surface border border-border-strong rounded-xl p-20 w-150 h-fit text-white shadow-[0_34px_70px_-18px_rgba(0,0,0,0.78)]">
         {/* App title */}
         <div className="flex justify-center mb-6">
-          <img src="/src/assets/logo.svg" alt="MediaLog" className="h-20" />
+          <img src={logo} alt="MediaLog" className="h-20" />
         </div>
 
         {/* Tab switcher: animated sliding underline indicates the active mode */}

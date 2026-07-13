@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { ChevronDown } from 'lucide-react'
+import API_URL from '../config.js'
 
 /**
  * EntryModal Component
