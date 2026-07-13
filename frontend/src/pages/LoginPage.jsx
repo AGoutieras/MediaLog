@@ -91,7 +91,9 @@ export default function LoginPage() {
       {/* Auth card */}
       <div className="bg-surface border border-border-strong rounded-xl p-20 w-150 h-fit text-white shadow-[0_34px_70px_-18px_rgba(0,0,0,0.78)]">
         {/* App title */}
-        <div className="text-2xl font-bold text-center mb-6">MediaLog</div>
+        <div className="flex justify-center mb-6">
+          <img src="/src/assets/logo.svg" alt="MediaLog" className="h-20" />
+        </div>
 
         {/* Tab switcher: animated sliding underline indicates the active mode */}
         <div className="relative flex w-full border-b border-border-strong mb-6">
