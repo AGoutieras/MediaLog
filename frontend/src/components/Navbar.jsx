@@ -41,7 +41,7 @@ export default function Navbar() {
       </div>
 
       {/* NavLink applies active styles automatically based on the current route */}
-      <div className="flex transition gap-8 ">
+      <div className="hidden sm:flex transition gap-8">
         <NavLink
           to="/dashboard"
           className={({ isActive }) =>
@@ -106,6 +106,28 @@ export default function Navbar() {
           </button>
         </div>
       </div>
+
+      {/* Bottom navigation — mobile only */}
+      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-base border-t border-border flex items-center justify-around px-4 py-3 sm:hidden">
+        <NavLink
+          to="/dashboard"
+          className={({ isActive }) =>
+            `flex flex-col items-center gap-1 text-xs ${isActive ? 'text-white' : 'text-text-muted'}`
+          }
+        >
+          <House size={22} />
+          Dashboard
+        </NavLink>
+        <NavLink
+          to="/search"
+          className={({ isActive }) =>
+            `flex flex-col items-center gap-1 text-xs ${isActive ? 'text-white' : 'text-text-muted'}`
+          }
+        >
+          <Search size={22} />
+          Search
+        </NavLink>
+      </nav>
     </nav>
   )
 }

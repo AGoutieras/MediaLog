@@ -33,7 +33,7 @@ export default function EntryDetailModal({ entry, onClose, onEdit, onDelete }) {
   }
 
   return (
-    <div className="fixed inset-0 backdrop-blur-xs flex justify-center overflow-y-auto z-50 py-[25vh]">
+    <div className="fixed inset-0 backdrop-blur-xs flex justify-center overflow-y-auto z-50 py-[25vh] px-4">
       <div className="bg-surface border border-border-strong rounded-xl p-6 w-150 h-fit shadow-[0_34px_70px_-18px_rgba(0,0,0,0.78)]">
         {/* Header: cover + title + close button */}
         <div className="flex justify-between items-start pb-4 border-b border-border">

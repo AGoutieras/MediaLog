@@ -75,7 +75,7 @@ export default function SearchPage() {
   }, [type])
 
   return (
-    <div className="p-8 pt-12">
+    <div className="p-4 pt-12 sm:p-8 sm:pt-12">
       <SearchBar
         query={query}
         setQuery={setQuery}

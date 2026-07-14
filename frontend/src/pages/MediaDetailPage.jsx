@@ -123,7 +123,7 @@ export default function MediaDetailPage() {
       </button>
 
       {/* Hero section */}
-      <div className="relative rounded-xl mb-2 bg-surface border border-border-strong">
+      <div className="relative flex flex-col sm:flex-row gap-6 sm:gap-8 p-6 sm:p-8">
         {/* Backdrop */}
         {media.backdrop_url && (
           <div className="absolute inset-0 rounded-xl overflow-hidden">
@@ -183,9 +183,9 @@ export default function MediaDetailPage() {
           )}
         </div>
 
-        <div className="relative flex gap-8 p-8">
+        <div className="relative flex flex-col sm:flex-row gap-6 sm:gap-8">
           {/* Cover */}
-          <div className="shrink-0 w-52 h-76 overflow-hidden rounded-lg bg-surface-2 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+          <div className="shrink-0 w-40 sm:w-52 h-56 sm:h-[304px] overflow-hidden rounded-lg bg-surface-2 shadow-[0_8px_32px_rgba(0,0,0,0.5)] mx-auto sm:mx-0">
             {media.cover_url ? (
               <img
                 src={media.cover_url}
@@ -215,7 +215,7 @@ export default function MediaDetailPage() {
                 )}
               </div>
 
-              <h1 className="text-white text-4xl font-bold mb-4 leading-tight">
+              <h1 className="text-white text-2xl sm:text-4xl font-bold mb-4 leading-tight">
                 {media.title}
               </h1>
 
