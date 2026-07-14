@@ -34,6 +34,7 @@ export default function MediaDetailPage() {
         })
         const data = await res.json()
         setMedia(data)
+        document.title = `MediaLog - ${data.title}`
       } catch (err) {
         console.error(err)
       } finally {
@@ -41,6 +42,10 @@ export default function MediaDetailPage() {
       }
     }
     fetchDetails()
+
+    return () => {
+      document.title = 'MediaLog'
+    }
   }, [type, id, token])
 
   useEffect(() => {
@@ -132,7 +137,7 @@ export default function MediaDetailPage() {
               alt=""
               className="w-full h-full object-cover opacity-20"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/80 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-r from-surface via-surface/80 to-transparent" />
           </div>
         )}
 
@@ -185,7 +190,7 @@ export default function MediaDetailPage() {
 
         <div className="relative flex flex-col sm:flex-row gap-6 sm:gap-8">
           {/* Cover */}
-          <div className="shrink-0 w-40 sm:w-52 h-56 sm:h-[304px] overflow-hidden rounded-lg bg-surface-2 shadow-[0_8px_32px_rgba(0,0,0,0.5)] mx-auto sm:mx-0">
+          <div className="shrink-0 w-40 sm:w-52 h-56 sm:h-76 overflow-hidden rounded-lg bg-surface-2 shadow-[0_8px_32px_rgba(0,0,0,0.5)] mx-auto sm:mx-0">
             {media.cover_url ? (
               <img
                 src={media.cover_url}

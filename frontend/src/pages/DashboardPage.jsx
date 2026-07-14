@@ -29,6 +29,10 @@ export default function DashboardPage() {
   }
 
   useEffect(() => {
+    document.title = 'MediaLog - Dashboard'
+  }, [])
+
+  useEffect(() => {
     fetchEntries()
   }, [])
 
