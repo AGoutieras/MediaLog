@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Check, X, SquarePen } from 'lucide-react'
 import API_URL from '../config.js'
@@ -24,8 +24,11 @@ export default function ProfilePage() {
   const [passwordInput, setPasswordInput] = useState('')
   const [currentPasswordInput, setCurrentPasswordInput] = useState('')
   const [confirmPasswordInput, setConfirmPasswordInput] = useState('')
-  // errors is an object keyed by field name for per-field error display
   const [errors, setErrors] = useState({})
+
+  useEffect(() => {
+    document.title = 'MediaLog - Edit Profile'
+  }, [])
 
   async function handleSaveUsername() {
     try {
