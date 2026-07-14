@@ -119,7 +119,7 @@ export default function FilterBar({
             </div>
           </div>
         </div>
-        jsx{/* Type buttons — mobile */}
+        {/* Type buttons — mobile */}
         <div className="flex sm:hidden gap-2 ml-auto">
           {[
             { type: 'all', icon: LayoutGrid },
