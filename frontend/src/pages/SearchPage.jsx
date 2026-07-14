@@ -28,6 +28,10 @@ export default function SearchPage() {
     }, 500)
   ).current
 
+  useEffect(() => {
+    document.title = 'MediaLog - Search'
+  }, [])
+
   // Cancel any pending debounce call on unmount
   useEffect(() => {
     return () => {
