@@ -130,7 +130,7 @@ export default function EntryModal({
   const today = new Date().toISOString().slice(0, 10)
 
   return (
-    <div className="fixed inset-0 backdrop-blur-sm flex items-start justify-center overflow-y-auto py-10 z-50">
+    <div className="fixed inset-0 backdrop-blur-sm flex items-start justify-center overflow-y-auto py-10 z-50 px-4">
       {/* Modal container */}
       <div className="bg-surface border border-border-strong rounded-xl p-6 w-140 shadow-[0_34px_70px_-18px_rgba(0,0,0,0.78)] my-10">
         {/* Header: title + close button */}

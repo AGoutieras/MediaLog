@@ -226,12 +226,12 @@ export default function MediaGrid({ entries, statusFilter, refetch }) {
                 <p className="text-sm">No {status.toLowerCase()} entries yet</p>
               </div>
             ) : (
-              <div className="grid grid-cols-6 gap-4">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
                 {sortedItems.map(entry => (
                   <div
                     key={entry.id}
                     onClick={() => setSelectedEntry(entry)}
-                    className="cursor-pointer w-fit"
+                    className="cursor-pointer"
                   >
                     <MediaTile entry={entry} />
                   </div>
